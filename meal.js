@@ -19,7 +19,7 @@ async function saveMeal() {
       document.getElementById("glucoseBefore").value;
 
     const glucose_after =
-      document.getElementById("glucoseAfter").value;
+  document.getElementById("glucoseAfter").value || null;
 
     const notes =
       document.getElementById("notes").value;
