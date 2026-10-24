@@ -1,16 +1,13 @@
 const client = supabase.createClient(
-  "https://cujvvxyadxvlfvhgzlki.supabase.co",
-  "sb_publishable_wogqNQurYqmvOx9FvoFxMQ_XyRMTxZ_"
+    "https://cujvvxyadxvlfvhgzlki.supabase.co",
+    "sb_publishable_wogqNQurYqmvOx9FvoFxMQ_XyRMTxZ_"
 );
 
 let glucoseChart = null;
 
 function escapeHtml(text) {
 
-    if (
-        text === null ||
-        text === undefined
-    ) {
+    if (text === null || text === undefined) {
         return "";
     }
 
@@ -50,9 +47,7 @@ function createChart(meals) {
     const canvas =
         document.getElementById("glucoseChart");
 
-    if (!canvas) {
-        return;
-    }
+    if (!canvas) return;
 
     const labels =
         meals.map(meal => meal.food_name);
@@ -77,7 +72,7 @@ function createChart(meals) {
 
         data: {
 
-            labels: labels,
+            labels,
 
             datasets: [
 
@@ -118,7 +113,6 @@ function createChart(meals) {
         }
 
     });
-
 }
 
 async function updateLatestReading(id) {
@@ -127,12 +121,7 @@ async function updateLatestReading(id) {
         "Enter the AFTER-meal glucose reading:"
     );
 
-    if (!value) {
-        return;
-    }
-
-    console.log("Meal ID:", id);
-    console.log("New Value:", value);
+    if (!value) return;
 
     const { data, error } = await client
         .from("meals")
@@ -182,7 +171,7 @@ async function loadLatestMeal() {
                 src="${data.photo_url}"
                 class="featured-photo"
                 alt="Meal Photo">
-          `
+        `
         : "";
 
     document.getElementById(
@@ -193,10 +182,10 @@ async function loadLatestMeal() {
 
         <div class="featured-content">
 
-            <h3>🍽 ${data.food_name}</h3>
+            <h3>🍽 ${escapeHtml(data.food_name)}</h3>
 
             <p class="meal-type">
-                ${data.meal_type}
+                ${escapeHtml(data.meal_type)}
             </p>
 
             <div class="glucose-row">
@@ -212,7 +201,7 @@ async function loadLatestMeal() {
             </div>
 
             <div class="meal-notes">
-                ${data.notes || "No notes"}
+                ${escapeHtml(data.notes || "No notes")}
             </div>
 
             <button
@@ -228,7 +217,6 @@ async function loadLatestMeal() {
             </button>
 
         </div>
-
     `;
 }
 
@@ -244,9 +232,14 @@ async function loadMeals() {
         return;
     }
 
+    const mealList =
+        document.getElementById("mealList");
+
+    mealList.innerHTML = "";
+
     document.getElementById(
-    "mealCount"
-).innerText = data.length;
+        "mealCount"
+    ).innerText = data.length;
 
     if (data.length > 0) {
 
@@ -256,12 +249,7 @@ async function loadMeals() {
             );
 
         const average =
-            glucoseValues.reduce(
-                (a, b) => a + b,
-                0
-            ) / glucoseValues.length;
-
-        const highest =
+            glucoseValues       const highest =
             Math.max(...glucoseValues);
 
         document.getElementById(
@@ -284,14 +272,11 @@ async function loadMeals() {
 
     data.forEach(meal => {
 
-const photoHtml = meal.photo_url
-    ? `
-        <img
-            src="${meal.photo_url}"
-            class="meal-photo"
-            alt="Meal Photo">
-      `
-    : "";
+        const photoHtml = meal.photo_url
+            ? `
+                ${meal.photo_url}
+              `
+            : "";
 
         const beforeClass =
             getGlucoseClass(
@@ -309,11 +294,11 @@ const photoHtml = meal.photo_url
 
                 ${photoHtml}
 
-                <h3>${meal.food_name}</h3>
+                <h3>${escapeHtml(meal.food_name)}</h3>
 
                 <div class="meal-info">
                     <strong>
-                        ${meal.meal_type}
+                        ${escapeHtml(meal.meal_type)}
                     </strong>
                 </div>
 
@@ -330,7 +315,7 @@ const photoHtml = meal.photo_url
                 </div>
 
                 <div class="meal-notes">
-                    ${meal.notes || "No notes"}
+                    ${escapeHtml(meal.notes || "No notes")}
                 </div>
 
             </div>
