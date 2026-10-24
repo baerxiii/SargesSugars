@@ -112,25 +112,52 @@ function createChart(meals) {
     });
 }
 
-async function updateLatestReading(id) {
+function updateLatestReading(id) {
 
-    const value = prompt(
-        "Enter the AFTER-meal glucose reading:"
-    );
+    currentMealId = id;
 
-    if (!value) return;
+    document.getElementById(
+        "readingModal"
+    ).style.display = "flex";
+
+    document.getElementById(
+        "newReading"
+    ).value = "";
+}
+
+function closeModal() {
+
+    document.getElementById(
+        "readingModal"
+    ).style.display = "none";
+}
+
+async function saveReading() {
+
+    const value =
+        Number(
+            document.getElementById(
+                "newReading"
+            ).value
+        );
+
+    if (!value) {
+        return;
+    }
 
     const { error } = await client
         .from("meals")
         .update({
-            glucose_after: Number(value)
+            glucose_after: value
         })
-        .eq("id", id);
+        .eq("id", currentMealId);
 
     if (error) {
         alert(error.message);
         return;
     }
+
+    closeModal();
 
     loadMeals();
     loadLatestMeal();
