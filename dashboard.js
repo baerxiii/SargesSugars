@@ -365,9 +365,16 @@ document.getElementById(
                 <h3>${escapeHtml(meal.food_name)}</h3>
 
                 <div class="meal-info">
-                    <p class="meal-type">
-    ${escapeHtml(meal.meal_type)}
-</p>
+
+    <strong>
+        🍽 ${escapeHtml(meal.meal_type)}
+    </strong>
+
+    <div class="meal-date">
+        🕒 ${formatDateTime(meal.created_at)}
+    </div>
+
+</div>
 
 <p class="meal-date">
     ${formatDateTime(meal.created_at)}
