@@ -248,12 +248,17 @@ async function loadMeals() {
             ) / glucoseValues.length;
 
         const highest =
-            Math.max(...glucoseValues);
+    Math.max(...glucoseValues);
 
-        document.getElementById(
-            "highestGlucose"
-        ).innerText =
-            highest.toFixed(1);
+document.getElementById(
+    "avgGlucose"
+).innerText =
+    average.toFixed(1);
+
+document.getElementById(
+    "highestGlucose"
+).innerText =
+    highest.toFixed(1);
 
         document.getElementById(
             "latestMeal"
