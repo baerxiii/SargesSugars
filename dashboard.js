@@ -237,8 +237,12 @@ async function loadLatestMeal() {
             <h3>🍽 ${escapeHtml(data.food_name)}</h3>
 
             <p class="meal-type">
-    ${escapeHtml(data.meal_type)}
+    🍽 ${escapeHtml(data.meal_type)}
 </p>
+
+<div class="meal-date">
+    🕒 ${formatDateTime(data.created_at)}
+</div>
 
 <p class="meal-date">
     ${formatDateTime(data.created_at)}
