@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Meal History</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <h2>Health Diary</h2>
+
+        <ul>
+
+            <li onclick="window.location.href='dashboard.html'">
+                🏠 Dashboard
+            </li>
+
+            <li onclick="window.location.href='meal.html'">
+                🍽 Log Meal
+            </li>
+
+            <li onclick="window.location.href='meals.html'">
+                📖 Meal History
+            </li>
+
+            <li>
+                💊 Medications
+            </li>
+
+            <li>
+                🚶 Activities
+            </li>
+
+            <li>
+                📊 Reports
+            </li>
+
+        </ul>
+
+    </aside>
+
+    <main class="content">
+
+        <div class="header">
+
+            <h1>Meal History</h1>
+
+            <button onclick="window.location.href='meal.html'">
+                + Log Meal
+            </button>
+
+        </div>
+
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search meals..."
+            class="search-box"
+        >
+
+        <div id="mealHistory">
+
+            Loading meals...
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="meals.js"></script>
+
+</body>
+</html>
