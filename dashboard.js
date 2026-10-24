@@ -235,9 +235,9 @@ async function loadMeals() {
         return;
     }
 
-    const getElementById(
-        "mealCount"
-    ).innerText = data.length;
+    document.getElementById(
+    "mealCount"
+).innerText = data.length;
 
     if (data.length > 0) {
 
