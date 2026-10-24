@@ -110,6 +110,43 @@
 
 </div>
 
+<div id="readingModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>Update 2-Hour Reading</h2>
+
+        <p>Enter the after-meal glucose reading.</p>
+
+        <input
+            type="number"
+            id="newReading"
+            step="0.1"
+            min="2"
+            max="30"
+            placeholder="e.g. 7.4"
+        >
+
+        <div class="modal-buttons">
+
+            <button
+                class="save-btn"
+                onclick="saveReading()">
+                Save
+            </button>
+
+            <button
+                class="register-btn"
+                onclick="closeModal()">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+    
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="dashboard.js"></script>
