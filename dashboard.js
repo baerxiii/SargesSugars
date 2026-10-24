@@ -5,6 +5,19 @@ const client = supabase.createClient(
 
 let glucoseChart = null;
 
+function formatDateTime(dateString) {
+
+    const date = new Date(dateString);
+
+    return date.toLocaleString(
+        "en-CA",
+        {
+            dateStyle: "medium",
+            timeStyle: "short"
+        }
+    );
+}
+
 function escapeHtml(text) {
     if (text === null || text === undefined) {
         return "";
@@ -161,8 +174,12 @@ async function loadLatestMeal() {
             <h3>🍽 ${escapeHtml(data.food_name)}</h3>
 
             <p class="meal-type">
-                ${escapeHtml(data.meal_type)}
-            </p>
+    ${escapeHtml(data.meal_type)}
+</p>
+
+<p class="meal-date">
+    ${formatDateTime(data.created_at)}
+</p>
 
             <div class="glucose-row">
 
@@ -276,9 +293,13 @@ async function loadMeals() {
                 <h3>${escapeHtml(meal.food_name)}</h3>
 
                 <div class="meal-info">
-                    <strong>
-                        ${escapeHtml(meal.meal_type)}
-                    </strong>
+                    <p class="meal-type">
+    ${escapeHtml(data.meal_type)}
+</p>
+
+<p class="meal-date">
+    ${formatDateTime(data.created_at)}
+</p>
                 </div>
 
                 <div class="glucose-row">
