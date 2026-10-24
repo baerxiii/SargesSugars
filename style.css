@@ -88,13 +88,24 @@ body {
 }
 
 .meal-photo {
-    width: 100%;
-    max-height: 500px;
+    width: 160px;
+    height: 160px;
+
     object-fit: contain;
-    border-radius: 10px;
-    margin-bottom: 12px;
+
+    display: block;
+
+    margin: 0 auto 15px auto;
+
+    border-radius: 12px;
+
     background: #f3f4f6;
-    padding: 10px;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e5e7eb;
 }
 
 .glucose-row {
@@ -502,15 +513,23 @@ body {
 
     width: 100%;
 
-    max-height: 450px;
+    max-width: 400px;
+
+    max-height: 250px;
 
     object-fit: contain;
+
+    display: block;
+
+    margin: 0 auto 15px auto;
 
     background: #f8fafc;
 
     padding: 10px;
 
     border-radius: 10px;
+
+    border: 1px solid #e5e7eb;
 }
 
 .featured-meal-card .edit-btn {
