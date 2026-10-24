@@ -284,11 +284,14 @@ async function loadMeals() {
 
     data.forEach(meal => {
 
-        const photoHtml = meal.photo_url
-            ? `
-                ${meal.photo_url}
-              `
-            : "";
+const photoHtml = meal.photo_url
+    ? `
+        <img
+            src="${meal.photo_url}"
+            class="meal-photo"
+            alt="Meal Photo">
+      `
+    : "";
 
         const beforeClass =
             getGlucoseClass(
