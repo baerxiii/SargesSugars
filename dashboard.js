@@ -5,6 +5,8 @@ const client = supabase.createClient(
 
 let glucoseChart = null;
 
+let currentMealId = null;
+
 function formatDateTime(dateString) {
 
     const date = new Date(dateString);
