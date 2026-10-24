@@ -6,241 +6,291 @@ const client = supabase.createClient(
 let glucoseChart = null;
 
 function getGlucoseClass(value) {
-  value = Number(value);
 
-  if (value < 7) return "glucose-good";
-  if (value < 10) return "glucose-warning";
+    value = Number(value);
 
-  return "glucose-high";
+    if (value < 7) {
+        return "glucose-good";
+    }
+
+    if (value < 10) {
+        return "glucose-warning";
+    }
+
+    return "glucose-high";
 }
 
 function createChart(meals) {
 
-  const canvas = document.getElementById("glucoseChart");
+    const canvas =
+        document.getElementById("glucoseChart");
 
-  if (!canvas) return;
-
-  const labels = meals.map(meal => meal.food_name);
-
-  const beforeData = meals.map(meal =>
-    Number(meal.glucose_before || 0)
-  );
-
-  const afterData = meals.map(meal =>
-    Number(meal.glucose_after || 0)
-  );
-
-  if (glucoseChart) {
-    glucoseChart.destroy();
-  }
-
-  glucoseChart = new Chart(canvas, {
-    type: "line",
-
-    data: {
-      labels: labels,
-
-      datasets: [
-        {
-          label: "Before Meal",
-          data: beforeData,
-          borderColor: "#2563eb",
-          backgroundColor: "#2563eb",
-          tension: 0.3
-        },
-        {
-          label: "After Meal",
-          data: afterData,
-          borderColor: "#dc2626",
-          backgroundColor: "#dc2626",
-          tension: 0.3
-        }
-      ]
-    },
-
-    options: {
-      responsive: true,
-
-      plugins: {
-        legend: {
-          position: "top"
-        }
-      },
-
-      scales: {
-        y: {
-          beginAtZero: false
-        }
-      }
+    if (!canvas) {
+        return;
     }
-  });
+
+    const labels =
+        meals.map(meal => meal.food_name);
+
+    const beforeData =
+        meals.map(meal =>
+            Number(meal.glucose_before || 0)
+        );
+
+    const afterData =
+        meals.map(meal =>
+            Number(meal.glucose_after || 0)
+        );
+
+    if (glucoseChart) {
+        glucoseChart.destroy();
+    }
+
+    glucoseChart = new Chart(canvas, {
+
+        type: "line",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [
+
+                {
+                    label: "Before Meal",
+                    data: beforeData,
+                    borderColor: "#2563eb",
+                    backgroundColor: "#2563eb",
+                    tension: 0.3
+                },
+
+                {
+                    label: "After Meal",
+                    data: afterData,
+                    borderColor: "#dc2626",
+                    backgroundColor: "#dc2626",
+                    tension: 0.3
+                }
+
+            ]
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    position: "top"
+                }
+            },
+
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+
+    });
+
 }
 
 async function updateLatestReading(id) {
 
-  const value = prompt(
-    "Enter the new AFTER-meal glucose reading:"
-  );
+    const value = prompt(
+        "Enter the new AFTER-meal glucose reading:"
+    );
 
-  if (!value) return;
+    if (!value) {
+        return;
+    }
 
-  const { error } = await client
-    .from("meals")
-    .update({
-      glucose_after: Number(value)
-    })
-    .eq("id", id);
+    const { error } = await client
+        .from("meals")
+        .update({
+            glucose_after: Number(value)
+        })
+        .eq("id", id);
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+    if (error) {
+        alert(error.message);
+        return;
+    }
 
-  loadMeals();
-  loadLatestMeal();
+    loadMeals();
+    loadLatestMeal();
 }
 
 async function loadLatestMeal() {
 
-  const { data, error } = await client
-    .from("meals")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single();
+    const { data, error } = await client
+        .from("meals")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+    if (error) {
+        console.error(error);
+        return;
+    }
 
-  const beforeClass =
-    getGlucoseClass(data.glucose_before);
+    const beforeClass =
+        getGlucoseClass(data.glucose_before);
 
-  const afterClass =
-    getGlucoseClass(data.glucose_after);
+    const afterClass =
+        getGlucoseClass(data.glucose_after);
 
-  const photoHtml = data.photo_url
-    ? `<img src="${data.photo_url}"
-            class="meal-photo"
-            alt="Meal Photo">`
-    : "";
+    const photoHtml = data.photo_url
+        ? `<img src="${data.photo_url}"
+                class="featured-photo"
+                alt="Meal Photo">`
+        : "";
 
-  document.getElementById("latestMealCard").innerHTML = `
+    document.getElementById(
+        "latestMealCard"
+    ).innerHTML = `
 
-    ${photoHtml}
+        ${photoHtml}
 
-    <h3>${data.food_name}</h3>
+        <div class="featured-content">
 
-    <p>
-      <strong>${data.meal_type}</strong>
-    </p>
+            <h3>🍽 ${data.food_name}</h3>
 
-    <div class="glucose-row">
+            <p class="meal-type">
+                ${data.meal_type}
+            </p>
 
-      <span class="glucose-badge ${beforeClass}">
-        Before: ${data.glucose_before}
-      </span>
+            <div class="glucose-row">
 
-      <span class="glucose-badge ${afterClass}">
-        After: ${data.glucose_after}
-      </span>
+                <span class="glucose-badge ${beforeClass}">
+                    Before: ${data.glucose_before}
+                </span>
 
-    </div>
+                <span class="glucose-badge ${afterClass}">
+                    After: ${data.glucose_after}
+                </span>
 
-    <button
-      class="edit-btn"
-      onclick="updateLatestReading(${data.id})">
-      Update 2‑Hour Reading
-    </button>
+            </div>
 
-  `;
+            <div class="meal-notes">
+                ${data.notes || "No notes"}
+            </div>
+
+            <button
+                class="edit-btn featured-button"
+                onclick="updateLatestReading(${data.id})">
+                Update 2-Hour Reading
+            </button>
+
+        </div>
+
+    `;
 }
 
 async function loadMeals() {
 
-  const { data, error } = await client
-    .from("meals")
-    .select("*")
-    .order("created_at", { ascending: false });
+    const { data, error } = await client
+        .from("meals")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+    if (error) {
+        console.error(error);
+        return;
+    }
 
-  const mealList =
-    document.getElementById("mealList");
+    const mealList =
+        document.getElementById("mealList");
 
-  mealList.innerHTML = "";
+    mealList.innerHTML = "";
 
-  document.getElementById("mealCount").innerText =
-    data.length;
+    document.getElementById(
+        "mealCount"
+    ).innerText = data.length;
 
-  if (data.length > 0) {
+    if (data.length > 0) {
 
-    const glucoseValues =
-      data.map(m =>
-        Number(m.glucose_before || 0)
-      );
+        const glucoseValues =
+            data.map(m =>
+                Number(m.glucose_before || 0)
+            );
 
-    const average =
-      glucoseValues.reduce(
-        (a, b) => a + b,
-        0
-      ) / glucoseValues.length;
+        const average =
+            glucoseValues.reduce(
+                (a, b) => a + b,
+                0
+            ) / glucoseValues.length;
 
-    const highest =
-      Math.max(...glucoseValues);
+        const highest =
+            Math.max(...glucoseValues);
 
-    document.getElementById("avgGlucose").innerText =
-      average.toFixed(1);
+        average.toFixed(1);
 
-    document.getElementById("highestGlucose").innerText =
-      highest.toFixed(1);
+        document.getElementById(
+            "highestGlucose"
+        ).innerText =
+            highest.toFixed(1);
 
-    document.getElementById("latestMeal").innerText =
-      data[0].food_name;
-  }
+        document.getElementById(
+            "latestMeal"
+        ).innerText =
+            data[0].food_name;
+    }
 
-  createChart([...data].reverse());
+    createChart([...data].reverse());
 
-  data.forEach(meal => {
+    data.forEach(meal => {
 
-    const photoHtml = meal.photo_url
-      ? `<img src="${meal.photo_url}"
-             class="meal-photo"
-             alt="Meal Photo">`
-      : "";
+        const photoHtml = meal.photo_url
+            ? `${meal.photo_url}`
+            : "";
 
-    const beforeClass =
-      getGlucoseClass(meal.glucose_before);
+        const beforeClass =
+            getGlucoseClass(
+                meal.glucose_before
+            );
 
-    const afterClass =
-      getGlucoseClass(meal.glucose_after);
+        const afterClass =
+            getGlucoseClass(
+                meal.glucose_after
+            );
 
-    mealList.innerHTML += `
-      <div class="meal-card">
+        mealList.innerHTML += `
 
-             <div class="glucose-row">
+            <div class="meal-card">
 
-          <span class="glucose-badge ${beforeClass}">
-            Before: ${meal.glucose_before}
-          </span>
+                ${photoHtml}
 
-          <span class="glucose-badge ${afterClass}">
-            After: ${meal.glucose_after}
-          </span>
+                <h3>${meal.food_name}</h3>
 
-        </div>
+                <div class="meal-info">
+                    <strong>
+                        ${meal.meal_type}
+                    </strong>
+                </div>
 
-        <div class="meal-notes">
-          ${meal.notes || "No notes"}
-        </div>
+                <div class="glucose-row">
 
-      </div>
-    `;
-  });
+                    <span class="glucose-badge ${beforeClass}">
+                        Before: ${meal.glucose_before}
+                    </span>
+
+                    <span class="glucose-badge ${afterClass}">
+                        After: ${meal.glucose_after}
+                    </span>
+
+                </div>
+
+                <div class="meal-notes">
+                    ${meal.notes || "No notes"}
+                </div>
+
+            </div>
+
+        `;
+    });
 }
 
 loadMeals();
