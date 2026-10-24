@@ -11,13 +11,47 @@ function formatDateTime(dateString) {
 
     const date = new Date(dateString);
 
-    return date.toLocaleString(
+    const today = new Date();
+
+    const yesterday = new Date();
+
+    yesterday.setDate(
+        today.getDate() - 1
+    );
+
+    const isToday =
+        date.toDateString() ===
+        today.toDateString();
+
+    const isYesterday =
+        date.toDateString() ===
+        yesterday.toDateString();
+
+    const time =
+        date.toLocaleTimeString(
+            "en-CA",
+            {
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+
+    if (isToday) {
+        return `Today • ${time}`;
+    }
+
+    if (isYesterday) {
+        return `Yesterday • ${time}`;
+    }
+
+    return date.toLocaleDateString(
         "en-CA",
         {
-            dateStyle: "medium",
-            timeStyle: "short"
+            month: "short",
+            day: "numeric",
+            year: "numeric"
         }
-    );
+    ) + ` • ${time}`;
 }
 
 function escapeHtml(text) {
