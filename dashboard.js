@@ -6,7 +6,6 @@ const client = supabase.createClient(
 let glucoseChart = null;
 
 function escapeHtml(text) {
-
     if (text === null || text === undefined) {
         return "";
     }
@@ -31,13 +30,8 @@ function getGlucoseClass(value) {
 
     value = Number(value);
 
-    if (value < 7) {
-        return "glucose-good";
-    }
-
-    if (value < 10) {
-        return "glucose-warning";
-    }
+    if (value < 7) return "glucose-good";
+    if (value < 10) return "glucose-warning";
 
     return "glucose-high";
 }
@@ -71,11 +65,9 @@ function createChart(meals) {
         type: "line",
 
         data: {
-
             labels,
 
             datasets: [
-
                 {
                     label: "Before Meal",
                     data: beforeData,
@@ -83,7 +75,6 @@ function createChart(meals) {
                     backgroundColor: "#2563eb",
                     tension: 0.3
                 },
-
                 {
                     label: "After Meal",
                     data: afterData,
@@ -91,23 +82,14 @@ function createChart(meals) {
                     backgroundColor: "#dc2626",
                     tension: 0.3
                 }
-
             ]
         },
 
         options: {
-
             responsive: true,
-
             plugins: {
                 legend: {
                     position: "top"
-                }
-            },
-
-            scales: {
-                y: {
-                    beginAtZero: false
                 }
             }
         }
@@ -123,23 +105,17 @@ async function updateLatestReading(id) {
 
     if (!value) return;
 
-    const { data, error } = await client
+    const { error } = await client
         .from("meals")
         .update({
             glucose_after: Number(value)
         })
-        .eq("id", id)
-        .select();
-
-    console.log("Updated Rows:", data);
-    console.log("Update Error:", error);
+        .eq("id", id);
 
     if (error) {
         alert(error.message);
         return;
     }
-
-    alert("Reading Updated!");
 
     loadMeals();
     loadLatestMeal();
@@ -171,7 +147,7 @@ async function loadLatestMeal() {
                 src="${data.photo_url}"
                 class="featured-photo"
                 alt="Meal Photo">
-        `
+          `
         : "";
 
     document.getElementById(
@@ -241,26 +217,21 @@ async function loadMeals() {
         "mealCount"
     ).innerText = data.length;
 
-if (data.length > 0) {
+    if (data.length > 0) {
 
-    const glucoseValues =
-        data.map(m =>
-            Number(m.glucose_before || 0)
-        );
+        const glucoseValues =
+            data.map(m =>
+                Number(m.glucose_before || 0)
+            );
 
-    const average =
-        glucoseValues.reduce(
-            (a, b) => a + b,
-            0
-        ) / glucoseValues.length;
+        const average =
+            glucoseValues.reduce(
+                (a, b) => a + b,
+                0
+            ) / glucoseValues.length;
 
-    const highest =
-        Math.max(...glucoseValues);
-
-        document.getElementById(
-            "avgGlucose"
-        ).innerText =
-            average.toFixed(1);
+        const highest =
+            Math.max(...glucoseValues);
 
         document.getElementById(
             "highestGlucose"
