@@ -299,11 +299,11 @@ document.getElementById(
 
                 <div class="meal-info">
                     <p class="meal-type">
-    ${escapeHtml(data.meal_type)}
+    ${escapeHtml(meal.meal_type)}
 </p>
 
 <p class="meal-date">
-    ${formatDateTime(data.created_at)}
+    ${formatDateTime(meal.created_at)}
 </p>
                 </div>
 
