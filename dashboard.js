@@ -156,10 +156,6 @@ async function updateLatestReading(id) {
     loadLatestMeal();
 }
 
-    loadMeals();
-    loadLatestMeal();
-}
-
 async function loadLatestMeal() {
 
     const { data, error } = await client
