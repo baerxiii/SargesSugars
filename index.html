@@ -1,37 +1,72 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
 
-    <title>Health Diary</title>
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sarge's Sugars</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
 
-<div class="container">
-    <h1>Health Diary</h1>
+    <div class="login-page">
 
-    <input type="email" id="email" placeholder="Email">
+        <div class="login-card">
 
-    <input type="password" id="password" placeholder="Password">
+            <h1>🩺 Sarge's Sugars</h1>
 
-    <div class="forgot-password">
-    <a href="#" onclick="resetPassword()">
-        Forgot Password?
-    </a>
-</div>
+            <p class="subtitle">
+                Track meals, glucose readings, photos, medications and progress.
+            </p>
 
-    <button onclick="signUp()">Create Account</button>
+            <label for="email">Email</label>
 
-    <button onclick="signIn()">Sign In</button>
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+            >
 
-    <p id="message"></p>
-</div>
+            <label for="password">Password</label>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="auth.js"></script>
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+            >
+
+            <div class="forgot-password">
+                <a href="#" onclick="resetPassword()">
+                    Forgot Password?
+                </a>
+            </div>
+
+            <button
+                class="login-btn"
+                onclick="signIn()">
+                Sign In
+            </button>
+
+            <button
+                class="register-btn"
+                onclick="signUp()">
+                Create Account
+            </button>
+
+            <p id="message"></p>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
 
 </body>
+
 </html>
