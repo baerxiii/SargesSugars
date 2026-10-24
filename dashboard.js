@@ -7,6 +7,14 @@ let glucoseChart = null;
 
 function getGlucoseClass(value) {
 
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+        return "glucose-warning";
+    }
+
     value = Number(value);
 
     if (value < 7) {
@@ -99,7 +107,7 @@ function createChart(meals) {
 async function updateLatestReading(id) {
 
     const value = prompt(
-        "Enter the new AFTER-meal glucose reading:"
+        "Enter the AFTER-meal glucose reading:"
     );
 
     if (!value) {
@@ -143,9 +151,12 @@ async function loadLatestMeal() {
         getGlucoseClass(data.glucose_after);
 
     const photoHtml = data.photo_url
-        ? `<img src="${data.photo_url}"
+        ? `
+            <img
+                src="${data.photo_url}"
                 class="featured-photo"
-                alt="Meal Photo">`
+                alt="Meal Photo">
+          `
         : "";
 
     document.getElementById(
@@ -169,7 +180,7 @@ async function loadLatestMeal() {
                 </span>
 
                 <span class="glucose-badge ${afterClass}">
-                    After: ${data.glucose_after}
+                    After: ${data.glucose_after ?? "Pending"}
                 </span>
 
             </div>
@@ -181,7 +192,13 @@ async function loadLatestMeal() {
             <button
                 class="edit-btn featured-button"
                 onclick="updateLatestReading(${data.id})">
-                Update 2-Hour Reading
+
+                ${
+                    data.glucose_after == null
+                        ? "Enter 2-Hour Reading"
+                        : "Update 2-Hour Reading"
+                }
+
             </button>
 
         </div>
@@ -201,12 +218,7 @@ async function loadMeals() {
         return;
     }
 
-    const mealList =
-        document.getElementById("mealList");
-
-    mealList.innerHTML = "";
-
-    document.getElementById(
+    const getElementById(
         "mealCount"
     ).innerText = data.length;
 
@@ -226,7 +238,10 @@ async function loadMeals() {
         const highest =
             Math.max(...glucoseValues);
 
-        average.toFixed(1);
+        document.getElementById(
+            "avgGlucose"
+        ).innerText =
+            average.toFixed(1);
 
         document.getElementById(
             "highestGlucose"
@@ -244,7 +259,9 @@ async function loadMeals() {
     data.forEach(meal => {
 
         const photoHtml = meal.photo_url
-            ? `${meal.photo_url}`
+            ? `
+                ${meal.photo_url}
+              `
             : "";
 
         const beforeClass =
@@ -278,7 +295,7 @@ async function loadMeals() {
                     </span>
 
                     <span class="glucose-badge ${afterClass}">
-                        After: ${meal.glucose_after}
+                        After: ${meal.glucose_after ?? "Pending"}
                     </span>
 
                 </div>
