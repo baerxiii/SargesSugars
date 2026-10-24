@@ -1,66 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Sarge's Sugars</title>
+    <title>Health Diary</title>
 
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 <body>
 
-    <div class="login-page">
+<div class="container">
+    <h1>Health Diary</h1>
 
-        <div class="login-card">
+    <input type="email" id="email" placeholder="Email">
 
-            <h1>🩺 Sarge's Sugars</h1>
+    <input type="password" id="password" placeholder="Password">
 
-            <p class="subtitle">
-                Track meals, glucose readings, photos, medications and progress.
-            </p>
+    <div class="forgot-password">
+    <a href="#" onclick="resetPassword()">
+        Forgot Password?
+    </a>
+</div>
 
-            <label for="email">Email</label>
+    <button onclick="signUp()">Create Account</button>
 
-            <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-            >
+    <button onclick="signIn()">Sign In</button>
 
-            <label for="password">Password</label>
+    <p id="message"></p>
+</div>
 
-            <input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-            >
-
-            <button
-                class="login-btn"
-                onclick="signIn()">
-                Sign In
-            </button>
-
-            <button
-                class="register-btn"
-                onclick="signUp()">
-                Create Account
-            </button>
-
-            <p id="message"></p>
-
-        </div>
-
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
 
 </body>
-
 </html>

@@ -31,6 +31,34 @@ async function signIn() {
     password
   });
 
+  async function resetPassword() {
+
+  const email =
+    document.getElementById("email").value;
+
+  if (!email) {
+
+    document.getElementById("message").innerText =
+      "Enter your email first.";
+
+    return;
+  }
+
+  const { error } =
+    await client.auth.resetPasswordForEmail(
+      email,
+      {
+        redirectTo:
+          window.location.origin + "/reset-password.html"
+      }
+    );
+
+  document.getElementById("message").innerText =
+    error
+      ? error.message
+      : "Password reset email sent.";
+}
+
   console.log("Login Data:", data);
   console.log("Login Error:", error);
 
