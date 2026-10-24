@@ -538,3 +538,18 @@ body {
 
     width: 100%;
 }
+
+.featured-content {
+    padding: 15px;
+}
+
+.meal-type {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.featured-button {
+    width: 100%;
+    margin-top: 15px;
+}
