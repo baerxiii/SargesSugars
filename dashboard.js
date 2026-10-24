@@ -388,7 +388,10 @@ document.getElementById(
                     </span>
 
                     <span class="glucose-badge ${afterClass}">
-                        After: ${meal.glucose_after ?? "Pending"}
+                        After: ${
+    meal.glucose_after ??
+    "⏳ Pending"
+}
                     </span>
 
                 </div>
