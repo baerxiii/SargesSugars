@@ -18,10 +18,7 @@ function createChart(meals) {
 
   const canvas = document.getElementById("glucoseChart");
 
-  if (!canvas) {
-    console.log("Chart canvas not found");
-    return;
-  }
+  if (!canvas) return;
 
   const labels = meals.map(meal => meal.food_name);
 
@@ -77,6 +74,87 @@ function createChart(meals) {
       }
     }
   });
+}
+
+async function updateLatestReading(id) {
+
+  const value = prompt(
+    "Enter the new AFTER-meal glucose reading:"
+  );
+
+  if (!value) return;
+
+  const { error } = await client
+    .from("meals")
+    .update({
+      glucose_after: Number(value)
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  loadMeals();
+  loadLatestMeal();
+}
+
+async function loadLatestMeal() {
+
+  const { data, error } = await client
+    .from("meals")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const beforeClass =
+    getGlucoseClass(data.glucose_before);
+
+  const afterClass =
+    getGlucoseClass(data.glucose_after);
+
+  const photoHtml = data.photo_url
+    ? `<img src="${data.photo_url}"
+            class="meal-photo"
+            alt="Meal Photo">`
+    : "";
+
+  document.getElementById("latestMealCard").innerHTML = `
+
+    ${photoHtml}
+
+    <h3>${data.food_name}</h3>
+
+    <p>
+      <strong>${data.meal_type}</strong>
+    </p>
+
+    <div class="glucose-row">
+
+      <span class="glucose-badge ${beforeClass}">
+        Before: ${data.glucose_before}
+      </span>
+
+      <span class="glucose-badge ${afterClass}">
+        After: ${data.glucose_after}
+      </span>
+
+    </div>
+
+    <button
+      class="edit-btn"
+      onclick="updateLatestReading(${data.id})">
+      Update 2‑Hour Reading
+    </button>
+
+  `;
 }
 
 async function loadMeals() {
@@ -144,15 +222,7 @@ async function loadMeals() {
     mealList.innerHTML += `
       <div class="meal-card">
 
-        ${photoHtml}
-
-        <h3>${meal.food_name}</h3>
-
-        <div class="meal-info">
-          <strong>${meal.meal_type}</strong>
-        </div>
-
-        <div class="glucose-row">
+             <div class="glucose-row">
 
           <span class="glucose-badge ${beforeClass}">
             Before: ${meal.glucose_before}
@@ -174,3 +244,4 @@ async function loadMeals() {
 }
 
 loadMeals();
+loadLatestMeal();
