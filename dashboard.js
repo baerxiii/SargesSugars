@@ -241,21 +241,21 @@ async function loadMeals() {
         "mealCount"
     ).innerText = data.length;
 
-    if (data.length > 0) {
+if (data.length > 0) {
 
-        const glucoseValues =
-            data.map(m =>
-                Number(m.glucose_before || 0)
-            );
+    const glucoseValues =
+        data.map(m =>
+            Number(m.glucose_before || 0)
+        );
 
-const average =
-    glucoseValues.reduce(
-        (a, b) => a + b,
-        0
-    ) / glucoseValues.length;
+    const average =
+        glucoseValues.reduce(
+            (a, b) => a + b,
+            0
+        ) / glucoseValues.length;
 
-const highest =
-    Math.max(...glucoseValues);
+    const highest =
+        Math.max(...glucoseValues);
 
         document.getElementById(
             "avgGlucose"
