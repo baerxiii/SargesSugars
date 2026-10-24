@@ -131,17 +131,30 @@ async function updateLatestReading(id) {
         return;
     }
 
-    const { error } = await client
+    console.log("Meal ID:", id);
+    console.log("New Value:", value);
+
+    const { data, error } = await client
         .from("meals")
         .update({
             glucose_after: Number(value)
         })
-        .eq("id", id);
+        .eq("id", id)
+        .select();
+
+    console.log("Updated Rows:", data);
+    console.log("Update Error:", error);
 
     if (error) {
         alert(error.message);
         return;
     }
+
+    alert("Reading Updated!");
+
+    loadMeals();
+    loadLatestMeal();
+}
 
     loadMeals();
     loadLatestMeal();
