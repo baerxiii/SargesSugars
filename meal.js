@@ -3,231 +3,147 @@ const client = supabase.createClient(
   "sb_publishable_wogqNQurYqmvOx9FvoFxMQ_XyRMTxZ_"
 );
 
-async function saveMeal() {
+const mealForm = document.getElementById("mealForm");
+const photoInput = document.getElementById("photo");
+const photoPreview = document.getElementById("photoPreview");
+const successMessage = document.getElementById("successMessage");
+const glucoseBeforeInput = document.getElementById("glucoseBefore");
+const glucoseAfterInput = document.getElementById("glucoseAfter");
 
-  try {
+function updateGlucoseStatus(inputId, statusId) {
+  const input = document.getElementById(inputId);
+  const status = document.getElementById(statusId);
 
-    console.log("===== SAVE MEAL STARTED =====");
+  if (!input || !status) return;
 
-    const food_name =
-      document.getElementById("food").value;
+  const rawValue = input.value.trim();
+  const value = Number(rawValue);
 
-    const meal_type =
-      document.getElementById("mealType").value;
-
-    const glucose_before =
-      document.getElementById("glucoseBefore").value;
-
-    const glucose_after =
-  document.getElementById("glucoseAfter").value || null;
-
-    const notes =
-      document.getElementById("notes").value;
-
-    const photoFile =
-      document.getElementById("photo").files[0];
-
-    console.log("Food:", food_name);
-    console.log("Meal Type:", meal_type);
-    console.log("Photo:", photoFile);
-
-    // -------------------
-    // AUTH DEBUG
-    // -------------------
-
-    const {
-      data: { user }
-    } = await client.auth.getUser();
-
-    const session =
-      await client.auth.getSession();
-
-    console.log("Current User:", user);
-    console.log("Current Session:", session);
-
-    if (!user) {
-      alert("No authenticated user found.");
-      return;
-    }
-
-    let photo_url = null;
-
-    // -------------------
-    // PHOTO UPLOAD
-    // -------------------
-
-    if (photoFile) {
-
-      console.log("Uploading photo...");
-      console.log("User Before Upload:", user);
-
-      const fileName =
-        Date.now() + "_" + photoFile.name;
-
-      const {
-        data: uploadData,
-        error: uploadError
-      } = await client.storage
-        .from("meal-photos")
-        .upload(fileName, photoFile);
-
-      console.log("Upload Data:", uploadData);
-      console.log("Upload Error:", uploadError);
-
-      if (uploadError) {
-
-        alert(
-          "UPLOAD ERROR:\n\n" +
-          JSON.stringify(uploadError, null, 2)
-        );
-
-        return;
-      }
-
-      const { data: urlData } =
-        client.storage
-          .from("meal-photos")
-          .getPublicUrl(fileName);
-
-      console.log("Generated URL:", urlData.publicUrl);
-
-      photo_url =
-        urlData.publicUrl;
-    }
-
-    // -------------------
-    // SAVE MEAL
-    // -------------------
-
-    const {
-      data,
-      error
-    } = await client
-      .from("meals")
-      .insert([
-        {
-          user_id: user.id,
-          food_name,
-          meal_type,
-          glucose_before,
-          glucose_after,
-          notes,
-          photo_url
-        }
-      ]);
-
-    console.log("Insert Data:", data);
-    console.log("Insert Error:", error);
-
-    if (error) {
-
-      alert(
-        "DATABASE ERROR:\n\n" +
-        JSON.stringify(error, null, 2)
-      );
-
-      return;
-    }
-
-document
-  .getElementById("successMessage")
-  .style.display = "block";
-
-setTimeout(() => {
-  window.location.href =
-    "dashboard.html";
-}, 1500);
-
-  }
-  catch (err) {
-
-    console.error(err);
-
-    alert(
-      "UNEXPECTED ERROR:\n\n" +
-      err.message
-    );
-
-  }
-
-document
-  .getElementById("photo")
-  .addEventListener("change", function () {
-
-    const file = this.files[0];
-
-    if (!file) return;
-
-    const preview =
-      document.getElementById("photoPreview");
-
-    preview.src =
-      URL.createObjectURL(file);
-
-    preview.style.display =
-      "block";
-  });
-
-function updateGlucoseStatus(
-  inputId,
-  statusId
-) {
-
-  const value =
-    Number(
-      document.getElementById(inputId).value
-    );
-
-  const status =
-    document.getElementById(statusId);
-
-  if (!value) {
+  if (!rawValue || Number.isNaN(value)) {
     status.innerHTML = "";
+    status.className = "glucose-status";
     return;
   }
 
   if (value < 7) {
-
-    status.innerHTML =
-      "🟢 In Range";
-
-    status.className =
-      "glucose-status status-good";
+    status.innerHTML = "🟢 In Range";
+    status.className = "glucose-status status-good";
+    return;
   }
-  else if (value < 10) {
 
-    status.innerHTML =
-      "🟡 Elevated";
-
-    status.className =
-      "glucose-status status-warning";
+  if (value < 10) {
+    status.innerHTML = "🟡 Elevated";
+    status.className = "glucose-status status-warning";
+    return;
   }
-  else {
 
-    status.innerHTML =
-      "🔴 High";
+  status.innerHTML = "🔴 High";
+  status.className = "glucose-status status-high";
+}
 
-    status.className =
-      "glucose-status status-high";
+function handlePhotoPreview() {
+  if (!photoInput || !photoPreview) return;
+
+  const file = photoInput.files && photoInput.files[0];
+  if (!file) {
+    photoPreview.style.display = "none";
+    photoPreview.src = "";
+    return;
+  }
+
+  photoPreview.src = URL.createObjectURL(file);
+  photoPreview.style.display = "block";
+}
+
+async function saveMeal(event) {
+  event.preventDefault();
+
+  if (!mealForm) return;
+
+  const foodName = document.getElementById("food")?.value?.trim();
+  const mealType = document.getElementById("mealType")?.value;
+  const glucoseBefore = document.getElementById("glucoseBefore")?.value;
+  const glucoseAfter = document.getElementById("glucoseAfter")?.value || null;
+  const notes = document.getElementById("notes")?.value?.trim() || "";
+  const photoFile = photoInput?.files?.[0] || null;
+
+  if (!foodName || !mealType || !glucoseBefore) {
+    alert("Please enter a meal name, meal type, and before-meal glucose reading.");
+    return;
+  }
+
+  try {
+    const {
+      data: { user },
+      error: userError,
+    } = await client.auth.getUser();
+
+    if (userError) {
+      throw userError;
+    }
+
+    if (!user) {
+      alert("No authenticated user found. Please sign in again.");
+      return;
+    }
+
+    let photoUrl = null;
+
+    if (photoFile) {
+      const fileName = `${Date.now()}_${photoFile.name}`;
+      const { error: uploadError } = await client.storage
+        .from("meal-photos")
+        .upload(fileName, photoFile);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: urlData } = client.storage.from("meal-photos").getPublicUrl(fileName);
+      photoUrl = urlData?.publicUrl || null;
+    }
+
+    const { error } = await client.from("meals").insert([
+      {
+        user_id: user.id,
+        food_name: foodName,
+        meal_type: mealType,
+        glucose_before: Number(glucoseBefore),
+        glucose_after: glucoseAfter ? Number(glucoseAfter) : null,
+        notes,
+        photo_url: photoUrl,
+      },
+    ]);
+
+    if (error) {
+      throw error;
+    }
+
+    if (successMessage) {
+      successMessage.style.display = "block";
+    }
+
+    window.setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1200);
+  } catch (error) {
+    console.error("Meal save error:", error);
+    alert(error?.message || "Something went wrong while saving your meal.");
   }
 }
 
-document
-  .getElementById("glucoseBefore")
-  .addEventListener("input", () =>
-    updateGlucoseStatus(
-      "glucoseBefore",
-      "beforeStatus"
-    )
-  );
+if (photoInput) {
+  photoInput.addEventListener("change", handlePhotoPreview);
+}
 
-document
-  .getElementById("glucoseAfter")
-  .addEventListener("input", () =>
-    updateGlucoseStatus(
-      "glucoseAfter",
-      "afterStatus"
-    )
-  );
+if (glucoseBeforeInput) {
+  glucoseBeforeInput.addEventListener("input", () => updateGlucoseStatus("glucoseBefore", "beforeStatus"));
+}
 
+if (glucoseAfterInput) {
+  glucoseAfterInput.addEventListener("input", () => updateGlucoseStatus("glucoseAfter", "afterStatus"));
+}
+
+if (mealForm) {
+  mealForm.addEventListener("submit", saveMeal);
 }

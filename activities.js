@@ -1,19 +1,32 @@
 const ACTIVITY_KEY = "sargesSugarsActivities";
 
-function getActivities() {
-  const data = localStorage.getItem(ACTIVITY_KEY);
-  return data ? JSON.parse(data) : [];
+function readJson(key, fallback = []) {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 function saveActivities(items) {
   localStorage.setItem(ACTIVITY_KEY, JSON.stringify(items));
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function renderActivities() {
   const list = document.getElementById("activityList");
   if (!list) return;
 
-  const activities = getActivities();
+  const activities = readJson(ACTIVITY_KEY, []);
 
   if (!activities.length) {
     list.innerHTML = '<div class="empty-state">No activities logged yet.</div>';
@@ -25,20 +38,20 @@ function renderActivities() {
     .reverse()
     .map(
       (activity, index) => `
-        <div class="meal-card">
-          <h3>${activity.type}</h3>
-          <p><strong>Duration:</strong> ${activity.minutes} minutes</p>
-          <p><strong>Calories:</strong> ${activity.calories || "—"}</p>
-          <p class="meal-notes">${activity.notes || "No notes."}</p>
-          <button class="delete-btn" onclick="deleteActivity(${index})">Delete</button>
-        </div>
+        <article class="meal-card">
+          <h3>${escapeHtml(activity.type || "Activity")}</h3>
+          <p><strong>Duration:</strong> ${Number(activity.minutes || 0)} minutes</p>
+          <p><strong>Calories:</strong> ${Number(activity.calories || 0) || "—"}</p>
+          <p class="meal-notes">${escapeHtml(activity.notes || "No notes.")}</p>
+          <button class="delete-btn" type="button" onclick="deleteActivity(${index})">Delete</button>
+        </article>
       `
     )
     .join("");
 }
 
 function deleteActivity(index) {
-  const activities = getActivities();
+  const activities = readJson(ACTIVITY_KEY, []);
   activities.splice(index, 1);
   saveActivities(activities);
   renderActivities();
@@ -47,18 +60,26 @@ function deleteActivity(index) {
 document.getElementById("activityForm")?.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const type = document.getElementById("activityType").value.trim();
-  const minutes = Number(document.getElementById("activityMinutes").value);
-  const calories = Number(document.getElementById("activityCalories").value || 0);
-  const notes = document.getElementById("activityNotes").value.trim();
+  const type = document.getElementById("activityType")?.value?.trim();
+  const minutes = Number(document.getElementById("activityMinutes")?.value || 0);
+  const calories = Number(document.getElementById("activityCalories")?.value || 0);
+  const notes = document.getElementById("activityNotes")?.value?.trim() || "";
 
-  if (!type || !minutes) return;
+  if (!type || !minutes) {
+    return;
+  }
 
-  const activities = getActivities();
-  activities.push({ type, minutes, calories, notes, createdAt: new Date().toISOString() });
+  const activities = readJson(ACTIVITY_KEY, []);
+  activities.push({
+    type,
+    minutes,
+    calories,
+    notes,
+    createdAt: new Date().toISOString(),
+  });
+
   saveActivities(activities);
   renderActivities();
-
   event.target.reset();
 });
 

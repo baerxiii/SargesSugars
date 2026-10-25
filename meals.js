@@ -5,21 +5,31 @@ const client = supabase.createClient(
 
 let mealsData = [];
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function getGlucoseClass(value) {
   const parsed = Number(value);
 
-  if (!value && value !== 0) {
+  if (value === null || value === undefined || value === "") {
     return "glucose-warning";
   }
 
   if (parsed < 7) return "glucose-good";
   if (parsed < 10) return "glucose-warning";
-
   return "glucose-high";
 }
 
 function formatDateTime(dateString) {
   const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "Unknown date";
+
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
@@ -50,25 +60,25 @@ function renderMeals(meals) {
 
   container.innerHTML = "";
 
-  if (meals.length === 0) {
+  if (!meals.length) {
     container.innerHTML = '<div class="empty-state">No meals logged yet.</div>';
     return;
   }
 
   meals.forEach((meal) => {
     const photoHtml = meal.photo_url
-      ? `<img src="${meal.photo_url}" class="meal-photo" alt="${meal.food_name}">`
+      ? `<img src="${meal.photo_url}" class="meal-photo" alt="${escapeHtml(meal.food_name || "Meal photo")}">`
       : "";
 
     const beforeClass = getGlucoseClass(meal.glucose_before);
     const afterClass = getGlucoseClass(meal.glucose_after);
 
     container.innerHTML += `
-      <div class="meal-card">
+      <article class="meal-card">
         ${photoHtml}
-        <h3>${meal.food_name}</h3>
+        <h3>${escapeHtml(meal.food_name || "Meal")}</h3>
 
-        <p><strong>${meal.meal_type}</strong></p>
+        <p><strong>${escapeHtml(meal.meal_type || "Meal")}</strong></p>
         <p class="meal-date">${formatDateTime(meal.created_at)}</p>
 
         <div class="glucose-row">
@@ -80,10 +90,9 @@ function renderMeals(meals) {
           </span>
         </div>
 
-        <p class="meal-notes">${meal.notes || "No notes added."}</p>
-
-        <button class="delete-btn" onclick="deleteMeal(${meal.id})">Delete</button>
-      </div>
+        <p class="meal-notes">${escapeHtml(meal.notes || "No notes added.")}</p>
+        <button class="delete-btn" type="button" onclick="deleteMeal(${meal.id})">Delete</button>
+      </article>
     `;
   });
 }
@@ -105,11 +114,12 @@ async function deleteMeal(id) {
 
 const searchBox = document.getElementById("searchBox");
 if (searchBox) {
-  searchBox.addEventListener("input", (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = mealsData.filter((meal) =>
-      meal.food_name.toLowerCase().includes(term)
-    );
+  searchBox.addEventListener("input", (event) => {
+    const term = event.target.value.trim().toLowerCase();
+    const filtered = mealsData.filter((meal) => {
+      const name = (meal.food_name || "").toLowerCase();
+      return name.includes(term);
+    });
 
     renderMeals(filtered);
   });

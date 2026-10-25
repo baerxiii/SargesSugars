@@ -1,24 +1,21 @@
 const MEAL_KEY = "sargesSugarsMealsReport";
 const ACTIVITY_KEY = "sargesSugarsActivities";
 
-function readMeals() {
-  const data = localStorage.getItem(MEAL_KEY);
-  if (!data) return [];
-
+function readJson(key, fallback = []) {
   try {
-    return JSON.parse(data);
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
   } catch {
-    return [];
+    return fallback;
   }
 }
 
 function getMealsFromSupabase() {
-  return readMeals();
+  return readJson(MEAL_KEY, []);
 }
 
 function getActivities() {
-  const data = localStorage.getItem(ACTIVITY_KEY);
-  return data ? JSON.parse(data) : [];
+  return readJson(ACTIVITY_KEY, []);
 }
 
 function renderReports() {
@@ -43,11 +40,6 @@ function renderReports() {
     ? (afterValues.reduce((sum, value) => sum + value, 0) / afterValues.length).toFixed(1)
     : "0.0";
 
-  document.getElementById("reportMeals").textContent = meals.length;
-  document.getElementById("reportAverage").textContent = averageBefore;
-  document.getElementById("reportAfter").textContent = averageAfter;
-  document.getElementById("reportActivity").textContent = totalActivityMinutes;
-
   const items = [
     { label: "Meals logged", value: meals.length, max: 10 },
     { label: "Average before", value: Number(averageBefore), max: 12 },
@@ -56,6 +48,8 @@ function renderReports() {
   ];
 
   const list = document.getElementById("reportList");
+  if (!list) return;
+
   list.innerHTML = items
     .map((item) => {
       const percent = Math.min(100, (item.value / item.max) * 100);
@@ -70,6 +64,16 @@ function renderReports() {
       `;
     })
     .join("");
+
+  const reportMeals = document.getElementById("reportMeals");
+  const reportAverage = document.getElementById("reportAverage");
+  const reportAfter = document.getElementById("reportAfter");
+  const reportActivity = document.getElementById("reportActivity");
+
+  if (reportMeals) reportMeals.textContent = String(meals.length);
+  if (reportAverage) reportAverage.textContent = averageBefore;
+  if (reportAfter) reportAfter.textContent = averageAfter;
+  if (reportActivity) reportActivity.textContent = String(totalActivityMinutes);
 }
 
 renderReports();
