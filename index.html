@@ -1,72 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sarge's Sugars</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="login-page">
+      <section class="login-card" aria-labelledby="login-title">
+        <div class="brand-mark" aria-hidden="true">🩺</div>
+        <p class="eyebrow">Daily health tracking</p>
+        <h1 id="login-title">Sarge's Sugars</h1>
 
-    <link rel="stylesheet" href="style.css">
+        <p class="subtitle">
+          Track meals, glucose readings, medications, and progress in one place.
+        </p>
 
-</head>
-
-<body>
-
-    <div class="login-page">
-
-        <div class="login-card">
-
-            <h1>🩺 Sarge's Sugars</h1>
-
-            <p class="subtitle">
-                Track meals, glucose readings, photos, medications and progress.
-            </p>
-
+        <form class="auth-form" novalidate>
+          <div class="field-group">
             <label for="email">Email</label>
-
             <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-            >
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+            />
+          </div>
 
+          <div class="field-group">
             <label for="password">Password</label>
-
             <input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-            >
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+          </div>
 
-            <div class="forgot-password">
-                <a href="#" onclick="resetPassword()">
-                    Forgot Password?
-                </a>
-            </div>
-
-            <button
-                class="login-btn"
-                onclick="signIn()">
-                Sign In
+          <div class="forgot-password">
+            <button type="button" class="text-btn" onclick="resetPassword()">
+              Forgot Password?
             </button>
+          </div>
 
-            <button
-                class="register-btn"
-                onclick="signUp()">
-                Create Account
+          <div class="auth-actions">
+            <button type="submit" class="login-btn">Sign In</button>
+            <button type="button" class="register-btn" onclick="signUp()">
+              Create Account
             </button>
+          </div>
 
-            <p id="message"></p>
-
-        </div>
-
-    </div>
+          <p id="message" class="auth-message" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="auth.js"></script>
-
-</body>
-
+  </body>
 </html>
