@@ -390,7 +390,6 @@ select {
   color: var(--text);
 }
 
-.meaL-type,
 .meal-type {
   margin: 0;
   color: var(--muted);
