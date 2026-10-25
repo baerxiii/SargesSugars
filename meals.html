@@ -1,82 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Meal History</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meal History</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-<div class="layout">
-
+  <div class="page-shell">
     <aside class="sidebar">
-
+      <div class="brand-block">
         <h2>Health Diary</h2>
+      </div>
 
-        <ul>
-
-            <li onclick="window.location.href='dashboard.html'">
-                🏠 Dashboard
-            </li>
-
-            <li onclick="window.location.href='meal.html'">
-                🍽 Log Meal
-            </li>
-
-            <li onclick="window.location.href='meals.html'">
-                📖 Meal History
-            </li>
-
-            <li>
-                💊 Medications
-            </li>
-
-            <li>
-                🚶 Activities
-            </li>
-
-            <li>
-                📊 Reports
-            </li>
-
+      <nav>
+        <ul class="nav-list">
+          <li><a href="dashboard.html">🏠 Dashboard</a></li>
+          <li><a href="meal.html">🍽 Log Meal</a></li>
+          <li><a href="meals.html" class="active">📖 Meal History</a></li>
+          <li><a href="medications.html">💊 Medications</a></li>
+          <li><a href="activities.html">🚶 Activities</a></li>
+          <li><a href="reports.html">📊 Reports</a></li>
+          <li><a href="settings.html">⚙ Settings</a></li>
         </ul>
-
+      </nav>
     </aside>
 
     <main class="content">
-
-        <div class="header">
-
-            <h1>Meal History</h1>
-
-            <button onclick="window.location.href='meal.html'">
-                + Log Meal
-            </button>
-
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Your records</p>
+          <h1>Meal History</h1>
         </div>
+        <a class="back-btn" href="dashboard.html">← Back</a>
+      </div>
 
-        <input
-            type="text"
-            id="searchBox"
-            placeholder="Search meals..."
-            class="search-box"
-        >
+      <div class="toolbar-row">
+        <input type="text" id="searchBox" class="search-box" placeholder="Search meals..." />
+        <button class="primary-btn" onclick="window.location.href='meal.html'">+ Log Meal</button>
+      </div>
 
-        <div id="mealHistory">
-
-            Loading meals...
-
-        </div>
-
+      <div id="mealHistory" class="stack-list">
+        Loading meals...
+      </div>
     </main>
+  </div>
 
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="meals.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="meals.js"></script>
 </body>
 </html>

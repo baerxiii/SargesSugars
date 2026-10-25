@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <h2>Health Diary</h2>
+      </div>
+
+      <nav>
+        <ul class="nav-list">
+          <li><a href="dashboard.html">🏠 Dashboard</a></li>
+          <li><a href="meal.html">🍽 Log Meal</a></li>
+          <li><a href="meals.html">📖 Meal History</a></li>
+          <li><a href="medications.html">💊 Medications</a></li>
+          <li><a href="activities.html">🚶 Activities</a></li>
+          <li><a href="reports.html" class="active">📊 Reports</a></li>
+          <li><a href="settings.html">⚙ Settings</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Progress</p>
+          <h1>Reports</h1>
+        </div>
+        <a class="back-btn" href="dashboard.html">← Back</a>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-box">
+          <p>Meals Logged</p>
+          <h3 id="reportMeals">0</h3>
+        </div>
+        <div class="summary-box">
+          <p>Average Before</p>
+          <h3 id="reportAverage">0</h3>
+        </div>
+        <div class="summary-box">
+          <p>Avg After</p>
+          <h3 id="reportAfter">0</h3>
+        </div>
+        <div class="summary-box">
+          <p>Activity Minutes</p>
+          <h3 id="reportActivity">0</h3>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <h2>Progress Snapshot</h2>
+        <div id="reportList" class="report-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="reports.js"></script>
+</body>
+</html>

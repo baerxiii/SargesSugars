@@ -1,155 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Health Diary Dashboard</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <h2>Health Diary</h2>
+      </div>
 
-<div class="layout">
-
-<aside class="sidebar">
-
-    <h2>Health Diary</h2>
-
-    <ul>
-
-        <li onclick="window.location.href='dashboard.html'">
-            🏠 Dashboard
-        </li>
-
-        <li onclick="window.location.href='meal.html'">
-            🍽 Log Meal
-        </li>
-
-        <li onclick="window.location.href='meals.html'">
-            📖 Meal History
-        </li>
-
-        <li onclick="window.location.href='medications.html'">
-            💊 Medications
-        </li>
-
-        <li onclick="window.location.href='activities.html'">
-            🚶 Activities
-        </li>
-
-        <li onclick="window.location.href='reports.html'">
-            📊 Reports
-        </li>
-
-        <li onclick="window.location.href='settings.html'">
-            ⚙ Settings
-        </li>
-
-    </ul>
-
-</aside>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="dashboard.html" class="active">🏠 Dashboard</a></li>
+          <li><a href="meal.html">🍽 Log Meal</a></li>
+          <li><a href="meals.html">📖 Meal History</a></li>
+          <li><a href="medications.html">💊 Medications</a></li>
+          <li><a href="activities.html">🚶 Activities</a></li>
+          <li><a href="reports.html">📊 Reports</a></li>
+          <li><a href="settings.html">⚙ Settings</a></li>
+        </ul>
+      </nav>
+    </aside>
 
     <main class="content">
-
-        <div class="header">
-
-            <h1>Dashboard</h1>
-
-            <button onclick="window.location.href='meal.html'">
-                + Log Meal
-            </button>
-
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Overview</p>
+          <h1>Dashboard</h1>
         </div>
+        <a class="back-btn" href="index.html">← Sign out</a>
+      </div>
 
-        <div class="stats-grid">
-
-            <div class="stat-card">
-                <h3 id="mealCount">0</h3>
-                <p>Meals Logged</p>
-            </div>
-
-            <div class="stat-card">
-                <h3 id="avgGlucose">0</h3>
-                <p>Average Glucose</p>
-            </div>
-
-            <div class="stat-card">
-                <h3 id="highestGlucose">0</h3>
-                <p>Highest Reading</p>
-            </div>
-
-            <div class="stat-card">
-                <h3 id="latestMeal">None</h3>
-                <p>Latest Meal</p>
-            </div>
-
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3 id="mealCount">0</h3>
+          <p>Meals Logged</p>
         </div>
-
-<h2>Glucose Trend</h2>
-
-<div class="chart-card">
-    <canvas id="glucoseChart"></canvas>
-</div>
-
-<div class="section-header">
-    <h2>🍽 Last Meal</h2>
-</div>
-
-<div id="latestMealCard" class="featured-meal-card">
-    Loading...
-</div>
-
-        <h2>Recent Meals</h2>
-
-        <div id="mealList">
-            Loading...
+        <div class="stat-card">
+          <h3 id="avgGlucose">0</h3>
+          <p>Average Glucose</p>
         </div>
+        <div class="stat-card">
+          <h3 id="highestGlucose">0</h3>
+          <p>Highest Reading</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="latestMeal">None</h3>
+          <p>Latest Meal</p>
+        </div>
+      </div>
 
+      <h2>Glucose Trend</h2>
+      <div class="chart-card">
+        <canvas id="glucoseChart"></canvas>
+      </div>
+
+      <div class="section-header">
+        <h2>🍽 Last Meal</h2>
+      </div>
+      <div id="latestMealCard" class="featured-meal-card">Loading...</div>
+
+      <h2>Recent Meals</h2>
+      <div id="mealList">Loading...</div>
     </main>
+  </div>
 
-</div>
-
-<div id="readingModal" class="modal">
-
+  <div id="readingModal" class="modal">
     <div class="modal-content">
+      <h2>Update 2-Hour Reading</h2>
+      <p>Enter the after-meal glucose reading.</p>
+      <input type="number" id="newReading" step="0.1" min="2" max="30" placeholder="e.g. 7.4" />
 
-        <h2>Update 2-Hour Reading</h2>
-
-        <p>Enter the after-meal glucose reading.</p>
-
-        <input
-            type="number"
-            id="newReading"
-            step="0.1"
-            min="2"
-            max="30"
-            placeholder="e.g. 7.4"
-        >
-
-        <div class="modal-buttons">
-
-            <button
-                class="save-btn"
-                onclick="saveReading()">
-                Save
-            </button>
-
-            <button
-                class="register-btn"
-                onclick="closeModal()">
-                Cancel
-            </button>
-
-        </div>
-
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="saveReading()">Save</button>
+        <button class="secondary-btn" onclick="closeModal()">Cancel</button>
+      </div>
     </div>
+  </div>
 
-</div>
-    
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="dashboard.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>

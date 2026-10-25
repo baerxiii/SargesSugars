@@ -1,107 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Log Meal</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log Meal</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="page-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <h2>Health Diary</h2>
+      </div>
 
-<div class="form-page">
+      <nav>
+        <ul class="nav-list">
+          <li><a href="dashboard.html">🏠 Dashboard</a></li>
+          <li><a href="meal.html" class="active">🍽 Log Meal</a></li>
+          <li><a href="meals.html">📖 Meal History</a></li>
+          <li><a href="medications.html">💊 Medications</a></li>
+          <li><a href="activities.html">🚶 Activities</a></li>
+          <li><a href="reports.html">📊 Reports</a></li>
+          <li><a href="settings.html">⚙ Settings</a></li>
+        </ul>
+      </nav>
+    </aside>
 
-    <div class="meal-form-card">
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Meal tracking</p>
+          <h1>🍽 Log Meal</h1>
+        </div>
+        <a class="back-btn" href="dashboard.html">← Back</a>
+      </div>
 
-        <h1>🍽 Log Meal</h1>
+      <div class="form-page">
+        <div class="meal-form-card">
+          <label>Food Name</label>
+          <input type="text" id="food" placeholder="Eggs and Toast" />
 
-        <label>Food Name</label>
-
-        <input
-            type="text"
-            id="food"
-            placeholder="Eggs and Toast"
-        >
-
-        <label>Meal Type</label>
-
-        <select id="mealType">
+          <label>Meal Type</label>
+          <select id="mealType">
             <option>Breakfast</option>
             <option>Lunch</option>
             <option>Dinner</option>
             <option>Snack</option>
-        </select>
+          </select>
 
-        <label>📸 Meal Photo</label>
+          <label>📸 Meal Photo</label>
+          <input type="file" id="photo" accept="image/*" capture="environment" />
+          <img id="photoPreview" class="photo-preview" alt="Meal preview" />
 
-        <input
-            type="file"
-            id="photo"
-            accept="image/*"
-            capture="environment"
-        >
+          <label>Before Meal Glucose</label>
+          <input type="number" id="glucoseBefore" min="2" max="30" step="0.1" placeholder="5.5" />
+          <div id="beforeStatus"></div>
 
-        <img
-            id="photoPreview"
-            class="photo-preview"
-            style="display:none;"
-        >
+          <label>After Meal Glucose</label>
+          <input type="number" id="glucoseAfter" min="2" max="30" step="0.1" placeholder="7.2" />
+          <div id="afterStatus"></div>
 
-        <label>Before Meal Glucose</label>
+          <label>Notes</label>
+          <textarea id="notes" rows="5" placeholder="Notes..."></textarea>
 
-        <input
-            type="number"
-            id="glucoseBefore"
-            min="2"
-            max="30"
-            step="0.1"
-            placeholder="5.5"
-        >
+          <button class="save-btn" onclick="saveMeal()">Save Meal</button>
 
-        <div id="beforeStatus"></div>
-
-        <label>After Meal Glucose</label>
-
-        <input
-            type="number"
-            id="glucoseAfter"
-            min="2"
-            max="30"
-            step="0.1"
-            placeholder="7.2"
-        >
-
-        <div id="afterStatus"></div>
-
-        <label>Notes</label>
-
-        <textarea
-            id="notes"
-            rows="5"
-            placeholder="Notes..."
-        ></textarea>
-
-        <button
-            class="save-btn"
-            onclick="saveMeal()"
-        >
-            Save Meal
-        </button>
-
-        <div
-            id="successMessage"
-            class="success-message"
-        >
+          <div id="successMessage" class="success-message">
             ✅ Meal Saved Successfully
+          </div>
         </div>
+      </div>
+    </main>
+  </div>
 
-    </div>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="meal.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="meal.js"></script>
 </body>
 </html>

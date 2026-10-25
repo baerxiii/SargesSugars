@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medications</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <h2>Health Diary</h2>
+      </div>
+
+      <nav>
+        <ul class="nav-list">
+          <li><a href="dashboard.html">🏠 Dashboard</a></li>
+          <li><a href="meal.html">🍽 Log Meal</a></li>
+          <li><a href="meals.html">📖 Meal History</a></li>
+          <li><a href="medications.html" class="active">💊 Medications</a></li>
+          <li><a href="activities.html">🚶 Activities</a></li>
+          <li><a href="reports.html">📊 Reports</a></li>
+          <li><a href="settings.html">⚙ Settings</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Health plan</p>
+          <h1>Medications</h1>
+        </div>
+        <a class="back-btn" href="dashboard.html">← Back</a>
+      </div>
+
+      <div class="panel">
+        <h2>Add Medication</h2>
+        <form id="medicationForm" class="settings-grid">
+          <div>
+            <label>Medication Name</label>
+            <input type="text" id="medicationName" placeholder="Metformin" required />
+          </div>
+          <div>
+            <label>Dosage</label>
+            <input type="text" id="medicationDosage" placeholder="500mg" required />
+          </div>
+          <div>
+            <label>Schedule</label>
+            <input type="text" id="medicationSchedule" placeholder="Morning / Evening" required />
+          </div>
+          <div>
+            <label>Notes</label>
+            <textarea id="medicationNotes" rows="3" placeholder="Take with food, etc."></textarea>
+          </div>
+          <button type="submit" class="primary-btn">Save Medication</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Medication List</h2>
+        <div id="medicationList" class="stack-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="medications.js"></script>
+</body>
+</html>

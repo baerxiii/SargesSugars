@@ -4,69 +4,86 @@ const client = supabase.createClient(
   "sb_publishable_wogqNQurYqmvOx9FvoFxMQ_XyRMTxZ_"
 );
 
-// Create Account
+function setMessage(text, isError = false) {
+  const messageEl = document.getElementById("message");
+  if (!messageEl) return;
+
+  messageEl.textContent = text;
+  messageEl.style.color = isError ? "#dc2626" : "#16a34a";
+}
+
 async function signUp() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email")?.value?.trim();
+  const password = document.getElementById("password")?.value;
+
+  if (!email || !password) {
+    setMessage("Please enter both email and password.", true);
+    return;
+  }
 
   const { data, error } = await client.auth.signUp({
     email,
-    password
+    password,
   });
 
   console.log("Signup Data:", data);
   console.log("Signup Error:", error);
 
-  document.getElementById("message").innerText =
-    error ? error.message : "Account created! Check your email.";
-}
-
-// Sign In
-async function signIn() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { data, error } = await client.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  async function resetPassword() {
-
-  const email =
-    document.getElementById("email").value;
-
-  if (!email) {
-
-    document.getElementById("message").innerText =
-      "Enter your email first.";
-
+  if (error) {
+    setMessage(error.message, true);
     return;
   }
 
-  const { error } =
-    await client.auth.resetPasswordForEmail(
-      email,
-      {
-        redirectTo:
-          window.location.origin + "/reset-password.html"
-      }
-    );
-
-  document.getElementById("message").innerText =
-    error
-      ? error.message
-      : "Password reset email sent.";
+  setMessage("Account created! Check your email to confirm.");
 }
+
+async function signIn() {
+  const email = document.getElementById("email")?.value?.trim();
+  const password = document.getElementById("password")?.value;
+
+  if (!email || !password) {
+    setMessage("Please enter both email and password.", true);
+    return;
+  }
+
+  const { data, error } = await client.auth.signInWithPassword({
+    email,
+    password,
+  });
 
   console.log("Login Data:", data);
   console.log("Login Error:", error);
 
   if (error) {
-    document.getElementById("message").innerText = error.message;
+    setMessage(error.message, true);
     return;
   }
 
-  // Successful login
+  setMessage("Signing in...");
   window.location.href = "dashboard.html";
+}
+
+async function resetPassword() {
+  const email = document.getElementById("email")?.value?.trim();
+
+  if (!email) {
+    setMessage("Enter your email first.", true);
+    return;
+  }
+
+  const { error } = await client.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + "/reset-password.html",
+  });
+
+  if (error) {
+    setMessage(error.message, true);
+    return;
+  }
+
+  setMessage("Password reset email sent.");
+}
+
+function logOut() {
+  client.auth.signOut();
+  window.location.href = "index.html";
 }
