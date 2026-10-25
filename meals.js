@@ -82,9 +82,7 @@ function renderMeals(meals) {
 
         <p class="meal-notes">${meal.notes || "No notes added."}</p>
 
-        <button class="delete-btn" onclick="deleteMeal(${meal.id})">
-          Delete
-        </button>
+        <button class="delete-btn" onclick="deleteMeal(${meal.id})">Delete</button>
       </div>
     `;
   });
