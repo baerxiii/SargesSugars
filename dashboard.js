@@ -105,6 +105,16 @@ function closeModal() {
 }
 
 async function saveReading() {
+
+    console.log("saveReading fired");
+
+    const value =
+        Number(
+            document.getElementById(
+                "newReading"
+            ).value
+        );
+  
   const value = Number(document.getElementById("newReading").value);
   if (!value) return;
 
