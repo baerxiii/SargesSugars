@@ -55,8 +55,9 @@ function handlePhotoPreview() {
   photoPreview.style.display = "block";
 }
 
-async function saveMeal(event) {
+if (event) {
   event.preventDefault();
+}
 
   if (!mealForm) return;
 
