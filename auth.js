@@ -83,7 +83,23 @@ async function resetPassword() {
   setMessage("Password reset email sent.");
 }
 
-function logOut() {
-  client.auth.signOut();
+async function logOut() {
+  await client.auth.signOut();
   window.location.href = "index.html";
+}
+
+checkSession();
+
+async function checkSession() {
+
+  const {
+    data: { session }
+  } = await client.auth.getSession();
+
+  if (
+    session &&
+    window.location.pathname.includes("index.html")
+  ) {
+    window.location.href = "dashboard.html";
+  }
 }
