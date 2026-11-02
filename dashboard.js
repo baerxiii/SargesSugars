@@ -115,7 +115,6 @@ async function saveReading() {
             ).value
         );
   
-  const value = Number(document.getElementById("newReading").value);
   if (!value) return;
 
   const { error } = await client
