@@ -114,22 +114,31 @@ async function saveReading() {
                 "newReading"
             ).value
         );
-  
-  if (!value) return;
 
-  const { error } = await client
-    .from("meals")
-    .update({ glucose_after: value })
-    .eq("id", currentMealId);
+    if (!value) {
+        return;
+    }
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+    const { data, error } = await client
+        .from("meals")
+        .update({
+            glucose_after: value
+        })
+        .eq("id", currentMealId)
+        .select();
 
-  closeModal();
-  loadMeals();
-  loadLatestMeal();
+    console.log("Updated Rows:", data);
+    console.log("Update Error:", error);
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    closeModal();
+
+    await loadMeals();
+    await loadLatestMeal();
 }
 
 async function loadLatestMeal() {
@@ -158,8 +167,7 @@ async function loadLatestMeal() {
       <h3>🍽 ${escapeHtml(data.food_name)}</h3>
       <p class="meal-type">🍽 ${escapeHtml(data.meal_type)}</p>
       <div class="meal-date">🕒 ${formatDateTime(data.created_at)}</div>
-      <p class="meal-date">${formatDateTime(data.created_at)}</p>
-
+      
       <div class="glucose-row">
         <span class="glucose-badge ${beforeClass}">
           Before: ${data.glucose_before}
