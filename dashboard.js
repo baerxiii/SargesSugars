@@ -108,14 +108,11 @@ async function saveReading() {
 
     console.log("saveReading fired");
 
-    const value =
-        Number(
-            document.getElementById(
-                "newReading"
-            ).value
-        );
+    const input = document.getElementById("newReading");
+    const value = Number(input.value);
 
-    if (!value) {
+    if (!input.value || !input.checkValidity() || !Number.isFinite(value)) {
+        alert("Please enter a glucose reading between 2 and 30.");
         return;
     }
 
@@ -132,6 +129,11 @@ async function saveReading() {
 
     if (error) {
         alert(error.message);
+        return;
+    }
+
+    if (!data.length) {
+        alert("The reading could not be saved. Please sign in and try again.");
         return;
     }
 
@@ -246,3 +248,24 @@ async function loadMeals() {
 
 loadMeals();
 loadLatestMeal();
+
+async function openReminderReading() {
+  const id = new URLSearchParams(window.location.search).get("reading");
+  if (!id || !/^\d+$/.test(id)) return;
+  const { data, error } = await client.from("meals")
+    .select("id, glucose_after").eq("id", id).maybeSingle();
+  if (error) {
+    console.error("Could not open reminder:", error);
+    alert("Could not open this reminder. Please sign in and try again.");
+    return;
+  }
+  if (!data) {
+    alert("This meal could not be found. Please sign in to the account that saved it.");
+    return;
+  }
+  if (data.glucose_after == null) updateLatestReading(data.id);
+  else alert("This meal already has an after-meal reading.");
+  history.replaceState(null, "", window.location.pathname);
+}
+
+openReminderReading();

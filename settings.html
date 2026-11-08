@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Settings</title>
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -50,16 +51,11 @@
         </div>
 
         <div class="setting-card">
-          <div class="toggle-row">
-            <div>
-              <h3>Daily reminders</h3>
-              <p>Receive reminders for meals and check-ins.</p>
-            </div>
-            <label class="switch">
-              <input type="checkbox" id="reminderToggle" checked />
-              <span class="slider"></span>
-            </label>
-          </div>
+          <h3>2-hour reading reminders</h3>
+          <p>Get a reminder about two hours after saving a meal without an after-meal reading. On iPhone, add this site to your Home Screen and open it from there first.</p>
+          <button type="button" class="secondary-btn" id="enableReminders">Enable reminders on this device</button>
+          <button type="button" class="secondary-btn" id="disableReminders">Disable reminders on this device</button>
+          <p id="reminderStatus" role="status" aria-live="polite"></p>
         </div>
 
         <div class="setting-card">
@@ -71,6 +67,7 @@
     </main>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="settings.js"></script>
 </body>
 </html>

@@ -1,0 +1,4 @@
+project_id = "cujvvxyadxvlfvhgzlki"
+
+[functions.send-reading-reminders]
+verify_jwt = false
