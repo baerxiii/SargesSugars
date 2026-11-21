@@ -8,6 +8,115 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .welcome-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+    .welcome-greeting {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .welcome-clock {
+      margin: 2px 0 0;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+    .dash-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .month-select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .quick-log-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .companion-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .companion-card {
+      padding: 16px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+    }
+    .companion-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .companion-card h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #0f172a;
+    }
+    .companion-link {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .companion-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.92rem;
+      color: #334155;
+    }
+    .companion-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #f8fafc;
+    }
+    .companion-meta {
+      font-size: 0.82rem;
+      color: #64748b;
+    }
+    .empty-state {
+      padding: 18px;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #475569;
+      border: 1px dashed #cbd5e1;
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
@@ -38,17 +147,31 @@
         <a class="back-btn" href="index.html">← Sign out</a>
       </div>
 
+      <section class="welcome-strip" aria-label="Current time and month filter">
+        <div>
+          <p id="welcomeGreeting" class="welcome-greeting">Welcome back</p>
+          <p id="livePhoneClock" class="welcome-clock">Checking current time…</p>
+        </div>
+        <div class="dash-controls">
+          <label for="monthFilter" class="sub" style="margin:0;">View:</label>
+          <select id="monthFilter" class="month-select" aria-label="Filter dashboard by month">
+            <option value="all">All Months</option>
+          </select>
+          <a href="meal.html" class="quick-log-btn">+ Log Meal</a>
+        </div>
+      </section>
+
       <div class="stats-grid">
         <div class="stat-card">
           <h3 id="mealCount">0</h3>
           <p>Meals Logged</p>
         </div>
         <div class="stat-card">
-          <h3 id="avgGlucose">0</h3>
+          <h3 id="avgGlucose">0.0</h3>
           <p>Average Glucose</p>
         </div>
         <div class="stat-card">
-          <h3 id="highestGlucose">0</h3>
+          <h3 id="highestGlucose">0.0</h3>
           <p>Highest Reading</p>
         </div>
         <div class="stat-card">
@@ -56,6 +179,24 @@
           <p>Latest Meal</p>
         </div>
       </div>
+
+      <section class="companion-grid" aria-label="Medications and activities summary">
+        <div class="companion-card">
+          <div class="companion-card-header">
+            <h3>💊 Medications</h3>
+            <a class="companion-link" href="medications.html">Manage →</a>
+          </div>
+          <div id="dashboardMedList">Loading medications…</div>
+        </div>
+
+        <div class="companion-card">
+          <div class="companion-card-header">
+            <h3>🚶 Activities</h3>
+            <a class="companion-link" href="activities.html">Log activity →</a>
+          </div>
+          <div id="dashboardActivityList">Loading activities…</div>
+        </div>
+      </section>
 
       <h2>Glucose Trend</h2>
       <div class="chart-card">
