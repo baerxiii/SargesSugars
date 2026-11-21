@@ -1,234 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Log Meal</title>
-
-    <link rel="manifest" href="manifest.webmanifest">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log Meal</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .meal-form-card {
+      max-width: 720px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+    }
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-group label {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 0.95rem;
+    }
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #ffffff;
+      color: #0f172a;
+    }
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .photo-box {
+      padding: 12px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+    .helper-note {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: #475569;
+      line-height: 1.45;
+    }
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .submit-meal-btn {
+      padding: 11px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .submit-meal-btn:hover {
+      background: #1d4ed8;
+    }
+    .secondary-cancel-link {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="page-shell">
+    <aside class="sidebar">
+      <div class="brand-block">
+        <h2>Health Diary</h2>
+      </div>
 
-    <div class="layout">
+      <nav>
+        <ul class="nav-list">
+          <li><a href="dashboard.html">🏠 Dashboard</a></li>
+          <li><a href="meal.html" class="active">🍽 Log Meal</a></li>
+          <li><a href="meals.html">📖 Meal History</a></li>
+          <li><a href="medications.html">💊 Medications</a></li>
+          <li><a href="activities.html">🚶 Activities</a></li>
+          <li><a href="reports.html">📊 Reports</a></li>
+          <li><a href="settings.html">⚙ Settings</a></li>
+        </ul>
+      </nav>
+    </aside>
 
-        <aside class="sidebar">
+    <main class="content">
+      <div class="page-header">
+        <div>
+          <p class="eyebrow">Meal Tracking</p>
+          <h1>🍽 Log Meal</h1>
+        </div>
+        <a class="back-btn" href="dashboard.html">← Back</a>
+      </div>
 
-            <h2>Sarge's Sugars</h2>
+      <form id="mealForm" class="meal-form-card">
+        <div class="form-section">
+          <div class="field-group">
+            <label for="foodName">Food Name</label>
+            <input
+              type="text"
+              id="foodName"
+              name="food_name"
+              placeholder="e.g., Eggs and Toast"
+              required
+            />
+          </div>
 
-            <ul>
+          <div class="field-group">
+            <label for="mealType">Meal Type</label>
+            <select id="mealType" name="meal_type">
+              <option value="Breakfast">Breakfast</option>
+              <option value="Lunch">Lunch</option>
+              <option value="Dinner">Dinner</option>
+              <option value="Snack">Snack</option>
+            </select>
+          </div>
 
-                <li>
-                    <a href="dashboard.html">
-                        🏠 Dashboard
-                    </a>
-                </li>
-
-                <li>
-                    <a href="meal.html" class="active">
-                        🍽 Log Meal
-                    </a>
-                </li>
-
-                <li>
-                    <a href="meals.html">
-                        📖 Meal History
-                    </a>
-                </li>
-
-                <li>
-                    <a href="medications.html">
-                        💊 Medications
-                    </a>
-                </li>
-
-                <li>
-                    <a href="activities.html">
-                        🚶 Activities
-                    </a>
-                </li>
-
-                <li>
-                    <a href="reports.html">
-                        📊 Reports
-                    </a>
-                </li>
-
-                <li>
-                    <a href="settings.html">
-                        ⚙ Settings
-                    </a>
-                </li>
-
-            </ul>
-
-        </aside>
-
-        <main class="content">
-
-            <div class="page-header">
-
-                <div>
-
-                    <p class="eyebrow">
-                        Meal Tracking
-                    </p>
-
-                    <h1>🍽 Log Meal</h1>
-
-                </div>
-
-                <a
-                    class="back-btn"
-                    href="dashboard.html">
-
-                    ← Back
-
-                </a>
-
+          <div class="two-col-grid">
+            <div class="field-group">
+              <label for="glucoseBefore">Before Meal Glucose</label>
+              <input
+                type="number"
+                id="glucoseBefore"
+                name="glucose_before"
+                step="0.1"
+                min="1"
+                max="40"
+                placeholder="e.g., 5.5"
+              />
             </div>
 
-            <div class="form-page">
-
-                <div class="meal-form-card">
-
-                    <form id="mealForm">
-
-                        <label for="food">
-                            Food Name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="food"
-                            placeholder="Eggs and Toast"
-                            required
-                        >
-
-                        <label for="mealType">
-                            Meal Type
-                        </label>
-
-                        <select id="mealType">
-
-                            <option>
-                                Breakfast
-                            </option>
-
-                            <option>
-                                Lunch
-                            </option>
-
-                            <option>
-                                Dinner
-                            </option>
-
-                            <option>
-                                Snack
-                            </option>
-
-                        </select>
-
-                        <label for="photo">
-                            📸 Meal Photo
-                        </label>
-
-                        <input
-                            type="file"
-                            id="photo"
-                            accept="image/*"
-                            capture="environment"
-                        >
-
-                        <img
-                            id="photoPreview"
-                            class="photo-preview"
-                            alt="Meal preview"
-                            style="display:none;"
-                        >
-
-                        <label for="glucoseBefore">
-                            Before Meal Glucose
-                        </label>
-
-                        <input
-                            type="number"
-                            id="glucoseBefore"
-                            min="2"
-                            max="30"
-                            step="0.1"
-                            placeholder="5.5"
-                            required
-                        >
-
-                        <div id="beforeStatus"></div>
-
-                        <label for="glucoseAfter">
-                            After Meal Glucose
-                        </label>
-
-                        <input
-                            type="number"
-                            id="glucoseAfter"
-                            min="2"
-                            max="30"
-                            step="0.1"
-                            placeholder="Leave blank and update later"
-                        >
-
-                        <div id="afterStatus"></div>
-                        <p>
-                            To receive a 2-hour reminder when this is blank,
-                            <a href="settings.html">enable reminders in Settings</a>
-                            before saving.
-                        </p>
-
-                        <label for="notes">
-                            Notes
-                        </label>
-
-                        <textarea
-                            id="notes"
-                            rows="5"
-                            placeholder="Notes..."
-                        ></textarea>
-
-                        <button
-                            type="submit"
-                            class="save-btn">
-
-                            Save Meal
-
-                        </button>
-
-                        <div
-                            id="successMessage"
-                            class="success-message">
-
-                            ✅ Meal Saved Successfully
-
-                        </div>
-
-                    </form>
-
-                </div>
-
+            <div class="field-group">
+              <label for="glucoseAfter">After Meal Glucose (Optional)</label>
+              <input
+                type="number"
+                id="glucoseAfter"
+                name="glucose_after"
+                step="0.1"
+                min="1"
+                max="40"
+                placeholder="Leave blank and update later"
+              />
             </div>
+          </div>
 
-        </main>
+          <p class="helper-note">
+            To receive a 2-hour reminder when after-meal glucose is blank,
+            <a href="settings.html">enable reminders in Settings</a> before saving.
+          </p>
 
-    </div>
+          <div class="field-group">
+            <label for="mealNotes">Notes / Medication</label>
+            <input
+              type="text"
+              id="mealNotes"
+              name="notes"
+              placeholder="e.g., Metformin or quick notes"
+            />
+          </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="meal.js"></script>
+          <div class="field-group">
+            <label for="mealPhoto">📷 Meal Photo (Optional)</label>
+            <div class="photo-box">
+              <input type="file" id="mealPhoto" name="photo" accept="image/*" />
+            </div>
+          </div>
+        </div>
 
+        <div class="form-actions">
+          <button type="submit" class="submit-meal-btn">Save Meal</button>
+          <a href="dashboard.html" class="secondary-cancel-link">Cancel</a>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="meal.js"></script>
 </body>
-
 </html>
+```[cite: 6]
+
+---
+
+### 3. Fix `reports.js` So It Reads Stored Meals Immediately
+
+Add this cache sync inside `loadMeals()` in `dashboard.js` right where `allMealsCache` is set:
+
+```javascript
+allMealsCache = Array.isArray(data) ? data : [];
+try {
+  localStorage.setItem("sargesSugarsMealsReport", JSON.stringify(allMealsCache));
+} catch {}
+```[cite: 2]
+
+And update `fetchMealsForReport()` in `reports.js` to read `sargesSugarsMealsReport` first (and only query Supabase if `localStorage` has nothing):
+
+```javascript
+async function fetchMealsForReport() {
+  const cached = readJson(MEAL_KEY, []);
+  if (Array.isArray(cached) && cached.length > 0) {
+    return cached;
+  }
+
+  if (dbClient) {
+    try {
+      const { data, error } = await dbClient
+        .from("meals")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!error && Array.isArray(data) && data.length > 0) {
+        writeJson(MEAL_KEY, data);
+        return data;
+      }
+    } catch {
+      // Fall back to empty array
+    }
+  }
+  return [];
+}
+```[cite: 2]
+
+### Quick Test
+1. Visit **Dashboard** once so `sargesSugarsMealsReport` is saved in `localStorage`[cite: 2, 7].
+2. Open **Reports**—your meal count, before/after averages, Progress Snapshot table, and Medications/Notes rows will populate right away[cite: 2, 8].
+
+If you also want to paste your existing `meal.js` here, I can make sure the form field IDs (`foodName`, `mealType`, `glucoseBefore`, `glucoseAfter`, `mealNotes`, `mealPhoto`) match your save logic without changing a thing!
