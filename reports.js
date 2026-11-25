@@ -2,6 +2,12 @@ const SUPABASE_URL = "https://cujvvxyadxvlfvhgzlki.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_wogqNQurYqmvOx9FvoFxMQ_XyRMTxZ_";
 
 const MEAL_KEY = "sargesSugarsMealsReport";
+const FALLBACK_MEAL_KEYS = [
+  MEAL_KEY,
+  "sargesSugarsMeals",
+  "healthDiaryMeals",
+  "meals",
+];
 const ACTIVITY_KEY = "sargesSugarsActivities";
 const MED_KEYS = ["sargesSugarsMedications", "healthDiaryMedications", "medications"];
 
@@ -33,6 +39,18 @@ function parseReading(val) {
   if (val === null || val === undefined || val === "") return null;
   const num = Number(val);
   return Number.isFinite(num) && num > 0 ? num : null;
+}
+
+function getBeforeReading(meal) {
+  return parseReading(
+    meal?.glucose_before ?? meal?.before_meal ?? meal?.glucoseBefore ?? meal?.before
+  );
+}
+
+function getAfterReading(meal) {
+  return parseReading(
+    meal?.glucose_after ?? meal?.after_meal ?? meal?.glucoseAfter ?? meal?.after
+  );
 }
 
 function getActivities() {
@@ -102,6 +120,16 @@ function setActiveView(viewName) {
   });
 }
 
+function readCachedMeals() {
+  for (const key of FALLBACK_MEAL_KEYS) {
+    const cached = readJson(key, null);
+    if (Array.isArray(cached) && cached.length > 0) {
+      return cached;
+    }
+  }
+  return [];
+}
+
 async function fetchMealsForReport() {
   if (dbClient) {
     try {
@@ -110,16 +138,16 @@ async function fetchMealsForReport() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (!error && Array.isArray(data)) {
+      if (!error && Array.isArray(data) && data.length > 0) {
         writeJson(MEAL_KEY, data);
         return data;
       }
     } catch {
-      // Fall back to local cache if network is unavailable
+      // Fall back to local cache if network or query fails
     }
   }
-  const cached = readJson(MEAL_KEY, []);
-  return Array.isArray(cached) ? cached : [];
+
+  return readCachedMeals();
 }
 
 function renderReportTable(rows) {
@@ -193,8 +221,8 @@ function renderMealsView(meals) {
 
   const rows = meals
     .map((meal) => {
-      const beforeNum = parseReading(meal.glucose_before);
-      const afterNum = parseReading(meal.glucose_after);
+      const beforeNum = getBeforeReading(meal);
+      const afterNum = getAfterReading(meal);
       const diff =
         beforeNum !== null && afterNum !== null
           ? `${afterNum - beforeNum >= 0 ? "+" : ""}${(afterNum - beforeNum).toFixed(1)}`
@@ -352,11 +380,11 @@ function renderAll() {
   const mealMedNotes = meals.filter((m) => String(m.notes || "").trim() !== "");
 
   const beforeValues = meals
-    .map((meal) => parseReading(meal.glucose_before))
+    .map(getBeforeReading)
     .filter((v) => v !== null);
 
   const afterValues = meals
-    .map((meal) => parseReading(meal.glucose_after))
+    .map(getAfterReading)
     .filter((v) => v !== null);
 
   const totalActivityMinutes = activities.reduce(
@@ -418,6 +446,10 @@ function renderAll() {
 }
 
 async function initReports() {
+  currentMeals = readCachedMeals();
+  if (currentMeals.length > 0) {
+    renderAll();
+  }
   currentMeals = await fetchMealsForReport();
   renderAll();
 }
@@ -464,7 +496,7 @@ document.getElementById("addMedForm")?.addEventListener("submit", (e) => {
 });
 
 window.addEventListener("storage", () => {
-  currentMeals = readJson(MEAL_KEY, currentMeals);
+  currentMeals = readCachedMeals();
   renderAll();
 });
 
