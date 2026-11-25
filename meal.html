@@ -218,51 +218,9 @@
   <script src="meal.js"></script>
 </body>
 </html>
-```[cite: 6]
+```[cite: 6, 11]
 
----
+### Quick Tip for Avoiding Stray Text in Files
+Whenever copying code from chat responses, make sure your selection starts at `<!DOCTYPE html>` or `const ...` and stops right at `</html>` or the final line of code—and if you ever spot an `Uncaught SyntaxError` pointing to a word at the end of a file, deleting anything after the code fixes it right away.
 
-### 3. Fix `reports.js` So It Reads Stored Meals Immediately
-
-Add this cache sync inside `loadMeals()` in `dashboard.js` right where `allMealsCache` is set:
-
-```javascript
-allMealsCache = Array.isArray(data) ? data : [];
-try {
-  localStorage.setItem("sargesSugarsMealsReport", JSON.stringify(allMealsCache));
-} catch {}
-```[cite: 2]
-
-And update `fetchMealsForReport()` in `reports.js` to read `sargesSugarsMealsReport` first (and only query Supabase if `localStorage` has nothing):
-
-```javascript
-async function fetchMealsForReport() {
-  const cached = readJson(MEAL_KEY, []);
-  if (Array.isArray(cached) && cached.length > 0) {
-    return cached;
-  }
-
-  if (dbClient) {
-    try {
-      const { data, error } = await dbClient
-        .from("meals")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (!error && Array.isArray(data) && data.length > 0) {
-        writeJson(MEAL_KEY, data);
-        return data;
-      }
-    } catch {
-      // Fall back to empty array
-    }
-  }
-  return [];
-}
-```[cite: 2]
-
-### Quick Test
-1. Visit **Dashboard** once so `sargesSugarsMealsReport` is saved in `localStorage`[cite: 2, 7].
-2. Open **Reports**—your meal count, before/after averages, Progress Snapshot table, and Medications/Notes rows will populate right away[cite: 2, 8].
-
-If you also want to paste your existing `meal.js` here, I can make sure the form field IDs (`foodName`, `mealType`, `glucoseBefore`, `glucoseAfter`, `mealNotes`, `mealPhoto`) match your save logic without changing a thing!
+Are any other pages or files showing leftover text or acting up?
