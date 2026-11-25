@@ -457,6 +457,9 @@ async function loadMeals() {
       allMealsCache = [];
     } else {
       allMealsCache = Array.isArray(data) ? data : [];
+      try {
+        localStorage.setItem("sargesSugarsMealsReport", JSON.stringify(allMealsCache));
+      } catch {}
     }
   } catch (err) {
     console.error("Network/load error:", err);
@@ -500,3 +503,6 @@ async function openReminderReading() {
 }
 
 openReminderReading();
+```[cite: 10]
+
+If you're looking at a different `dashboard.js` file in your repo or editor, paste that version here and I can drop the exact lines into that copy too.
