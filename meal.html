@@ -127,9 +127,9 @@
       <div class="page-header">
         <div>
           <p class="eyebrow">Meal Tracking</p>
-          <h1>🍽 Log Meal</h1>
+          <h1 id="mealPageTitle">🍽 Log Meal</h1>
         </div>
-        <a class="back-btn" href="dashboard.html">← Back</a>
+        <a class="back-btn" href="meals.html">← Back</a>
       </div>
 
       <form id="mealForm" class="meal-form-card">
@@ -202,13 +202,16 @@
             <label for="mealPhoto">📷 Meal Photo (Optional)</label>
             <div class="photo-box">
               <input type="file" id="mealPhoto" name="photo" accept="image/*" />
+              <img id="photoPreview" class="photo-preview" alt="Meal photo preview" />
             </div>
           </div>
         </div>
 
+        <div id="formStatus" class="success-message" role="status"></div>
+
         <div class="form-actions">
-          <button type="submit" class="submit-meal-btn">Save Meal</button>
-          <a href="dashboard.html" class="secondary-cancel-link">Cancel</a>
+          <button type="submit" id="submitMealBtn" class="submit-meal-btn">Save Meal</button>
+          <a href="meals.html" class="secondary-cancel-link">Cancel</a>
         </div>
       </form>
     </main>
