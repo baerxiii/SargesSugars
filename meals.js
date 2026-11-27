@@ -10,7 +10,7 @@ function escapeHtml(value) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
+    .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
 
@@ -67,11 +67,12 @@ function renderMeals(meals) {
 
   meals.forEach((meal) => {
     const photoHtml = meal.photo_url
-      ? `<img src="${meal.photo_url}" class="meal-photo" alt="${escapeHtml(meal.food_name || "Meal photo")}">`
+      ? `<img src="${escapeHtml(meal.photo_url)}" class="meal-photo" alt="${escapeHtml(meal.food_name || "Meal photo")}">`
       : "";
 
     const beforeClass = getGlucoseClass(meal.glucose_before);
     const afterClass = getGlucoseClass(meal.glucose_after);
+    const encodedId = encodeURIComponent(meal.id);
 
     container.innerHTML += `
       <article class="meal-card">
@@ -83,21 +84,29 @@ function renderMeals(meals) {
 
         <div class="glucose-row">
           <span class="glucose-badge ${beforeClass}">
-            Before: ${meal.glucose_before ?? "—"}
+            Before: ${escapeHtml(meal.glucose_before ?? "—")}
           </span>
           <span class="glucose-badge ${afterClass}">
-            After: ${meal.glucose_after ?? "Pending"}
+            After: ${escapeHtml(meal.glucose_after ?? "Pending")}
           </span>
         </div>
 
         <p class="meal-notes">${escapeHtml(meal.notes || "No notes added.")}</p>
-        <button class="delete-btn" type="button" onclick="deleteMeal(${meal.id})">Delete</button>
+        <div class="card-actions">
+          <button class="edit-btn" type="button" onclick="editMeal('${encodedId}')">Edit</button>
+          <button class="delete-btn" type="button" onclick="deleteMeal('${encodedId}')">Delete</button>
+        </div>
       </article>
     `;
   });
 }
 
-async function deleteMeal(id) {
+function editMeal(encodedId) {
+  window.location.href = `meal.html?edit=${encodedId}`;
+}
+
+async function deleteMeal(encodedId) {
+  const id = decodeURIComponent(encodedId);
   if (!confirm("Delete this meal?")) {
     return;
   }
