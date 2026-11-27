@@ -3,158 +3,122 @@ const client = supabase.createClient(
   "sb_publishable_wogqNQurYqmvOx9FvoFxMQ_XyRMTxZ_"
 );
 
-const mealForm = document.getElementById("mealForm");
+const editId = new URLSearchParams(window.location.search).get("edit");
+let existingPhotoUrl = null;
+
+function parseNullableNumber(val) {
+  if (val === "" || val === null || val === undefined) return null;
+  const num = Number(val);
+  return Number.isNaN(num) ? null : num;
+}
+
+function showStatus(message, isError = false) {
+  const statusEl = document.getElementById("formStatus");
+  if (!statusEl) {
+    alert(message);
+    return;
+  }
+  statusEl.textContent = message;
+  statusEl.style.display = "block";
+  statusEl.style.background = isError ? "#fee2e2" : "#dcfce7";
+  statusEl.style.color = isError ? "#991b1b" : "#166534";
+}
+
+async function initEditMode() {
+  if (!editId) return;
+
+  const { data: meal, error } = await client
+    .from("meals")
+    .select("*")
+    .eq("id", editId)
+    .single();
+
+  if (error || !meal) {
+    console.error("Failed to load meal:", error);
+    showStatus("Could not load meal for editing.", true);
+    return;
+  }
+
+  document.title = "Edit Meal";
+  const pageTitle = document.getElementById("mealPageTitle");
+  if (pageTitle) pageTitle.textContent = "✏️ Edit Meal";
+
+  const submitBtn = document.getElementById("submitMealBtn");
+  if (submitBtn) submitBtn.textContent = "Update Meal";
+
+  document.getElementById("foodName").value = meal.food_name ?? "";
+  document.getElementById("mealType").value = meal.meal_type ?? "Breakfast";
+  document.getElementById("glucoseBefore").value = meal.glucose_before ?? "";
+  document.getElementById("glucoseAfter").value = meal.glucose_after ?? "";
+  document.getElementById("mealNotes").value = meal.notes ?? "";
+
+  if (meal.photo_url) {
+    existingPhotoUrl = meal.photo_url;
+    const preview = document.getElementById("photoPreview");
+    if (preview) {
+      preview.src = meal.photo_url;
+      preview.style.display = "block";
+    }
+  }
+}
+
 const photoInput = document.getElementById("mealPhoto");
-const photoPreview = document.getElementById("photoPreview");
-const successMessage = document.getElementById("successMessage");
-const glucoseBeforeInput = document.getElementById("glucoseBefore");
-const glucoseAfterInput = document.getElementById("glucoseAfter");
-
-function updateGlucoseStatus(inputId, statusId) {
-  const input = document.getElementById(inputId);
-  const status = document.getElementById(statusId);
-
-  if (!input || !status) return;
-
-  const rawValue = input.value.trim();
-  const value = Number(rawValue);
-
-  if (!rawValue || Number.isNaN(value)) {
-    status.innerHTML = "";
-    status.className = "glucose-status";
-    return;
-  }
-
-  if (value < 7) {
-    status.innerHTML = "🟢 In Range";
-    status.className = "glucose-status status-good";
-    return;
-  }
-
-  if (value < 10) {
-    status.innerHTML = "🟡 Elevated";
-    status.className = "glucose-status status-warning";
-    return;
-  }
-
-  status.innerHTML = "🔴 High";
-  status.className = "glucose-status status-high";
+if (photoInput) {
+  photoInput.addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    const preview = document.getElementById("photoPreview");
+    if (!file || !preview) return;
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  });
 }
 
-function handlePhotoPreview() {
-  if (!photoInput || !photoPreview) {
-    return;
-  }
+const mealForm = document.getElementById("mealForm");
+if (mealForm) {
+  mealForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const file = photoInput.files?.[0];
+    const submitBtn = document.getElementById("submitMealBtn");
+    if (submitBtn) submitBtn.disabled = true;
 
-  if (!file) {
-    photoPreview.src = "";
-    photoPreview.style.display = "none";
-    return;
-  }
+    const payload = {
+      food_name: document.getElementById("foodName").value.trim(),
+      meal_type: document.getElementById("mealType").value,
+      glucose_before: parseNullableNumber(document.getElementById("glucoseBefore").value),
+      glucose_after: parseNullableNumber(document.getElementById("glucoseAfter").value),
+      notes: document.getElementById("mealNotes").value.trim() || null,
+    };
 
-  photoPreview.src = URL.createObjectURL(file);
-  photoPreview.style.display = "block";
-}
-
-async function saveMeal(event) {
-  if (event) {
-    event.preventDefault();
-  }
-
-  const foodName = document.getElementById("foodName")?.value?.trim();
-  const mealType = document.getElementById("mealType")?.value;
-  const glucoseBefore = document.getElementById("glucoseBefore")?.value;
-  const glucoseAfter = document.getElementById("glucoseAfter")?.value || null;
-  const notes = document.getElementById("mealNotes")?.value?.trim() || "";
-  const photoFile = photoInput?.files?.[0] || null;
-
-  if (!foodName || !mealType || !glucoseBefore) {
-    alert("Please enter a food name, meal type, and before-meal glucose reading.");
-    return;
-  }
-
-  try {
-    const {
-      data: { user },
-      error: userError,
-    } = await client.auth.getUser();
-
-    if (userError) {
-      throw userError;
+    if (existingPhotoUrl) {
+      payload.photo_url = existingPhotoUrl;
     }
 
-    if (!user) {
-      alert("No authenticated user found. Please sign in again.");
+    let result;
+    if (editId) {
+      result = await client
+        .from("meals")
+        .update(payload)
+        .eq("id", editId)
+        .select();
+    } else {
+      result = await client
+        .from("meals")
+        .insert(payload)
+        .select();
+    }
+
+    if (result.error) {
+      console.error(result.error);
+      showStatus(result.error.message || "Failed to save meal.", true);
+      if (submitBtn) submitBtn.disabled = false;
       return;
     }
 
-    let photoUrl = null;
-
-    if (photoFile) {
-      const fileName = `${Date.now()}_${photoFile.name}`;
-
-      const { error: uploadError } = await client.storage
-        .from("meal-photos")
-        .upload(fileName, photoFile);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      const { data: urlData } = client.storage
-        .from("meal-photos")
-        .getPublicUrl(fileName);
-
-      photoUrl = urlData?.publicUrl || null;
-    }
-
-    const { error } = await client.from("meals").insert([
-      {
-        user_id: user.id,
-        food_name: foodName,
-        meal_type: mealType,
-        glucose_before: Number(glucoseBefore),
-        glucose_after: glucoseAfter ? Number(glucoseAfter) : null,
-        notes,
-        photo_url: photoUrl,
-      },
-    ]);
-
-    if (error) {
-      throw error;
-    }
-
-    if (successMessage) {
-      successMessage.style.display = "block";
-    }
-
+    showStatus(editId ? "Meal updated! Redirecting..." : "Meal saved! Redirecting...");
     setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 1200);
-  } catch (error) {
-    console.error("Meal save error:", error);
-    alert(error?.message || "Something went wrong while saving the meal.");
-  }
+      window.location.href = "meals.html";
+    }, 500);
+  });
 }
 
-if (photoInput) {
-  photoInput.addEventListener("change", handlePhotoPreview);
-}
-
-if (glucoseBeforeInput) {
-  glucoseBeforeInput.addEventListener("input", () =>
-    updateGlucoseStatus("glucoseBefore", "beforeStatus")
-  );
-}
-
-if (glucoseAfterInput) {
-  glucoseAfterInput.addEventListener("input", () =>
-    updateGlucoseStatus("glucoseAfter", "afterStatus")
-  );
-}
-
-if (mealForm) {
-  mealForm.addEventListener("submit", saveMeal);
-}
+initEditMode();
